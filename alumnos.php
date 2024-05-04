@@ -1,13 +1,14 @@
 <?php
 $nombre=$_POST['nombre'] ?? null;
 $num_paginas = intval($_POST['pagina'] ?? 1);
+
 ?>
 <?php
 
   $nombre=$_POST['nombre'] ?? null;
   $num_paginas = intval($_POST['pagina'] ?? 1);
   $host='localhost';
-  $dbname='practicas_alumnos';
+  $dbname='gestion_fct';
   $user='root';
   $pass='';
   
@@ -60,9 +61,9 @@ $num_paginas = intval($_POST['pagina'] ?? 1);
     $registros = ($num_paginas-1)*$registros_pagina;
 
     
-    $sql = "SELECT nia, nombre, apellido1, apellido2, mail FROM alumno where true limit $registros, $registros_pagina";
+    $sql = "SELECT nia, nombre,telefono,cv_file ,email FROM alumno where true limit $registros, $registros_pagina";
     if(isset($_POST["nombre"])){
-      $sql = "SELECT nia, nombre, apellido1, apellido2, mail FROM alumno where true and nombre like :nombre limit $registros, $registros_pagina"; 
+      $sql = "SELECT nia, nombre,telefono,cv_file ,email FROM alumno where true and nombre like :nombre limit $registros, $registros_pagina"; 
     }
     $gsent = $pdo->prepare($sql);
     if(isset($_POST["nombre"])){
@@ -75,9 +76,9 @@ $num_paginas = intval($_POST['pagina'] ?? 1);
 
 
       echo "<table>";
-    	echo "<tr><th>Nia</th><th>Nombre</th><th>Apellidos</th><th>Dirección</th></tr>";
+    	echo "<tr><th>NIA</th><th>Nombre</th><th>Telefono</th><th>Email</th><th>CV</th></tr>";
     	while ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
-      echo "<tr><td>".$row['nia']."</td><td>".$row['nombre']."</td><td>".$row['apellido1']." ".$row['apellido2']."</td><td>".$row['mail']."</td></tr>";	
+      echo "<tr><td>".$row['nia']."</td><td>".$row['nombre']."</td><td>".$row['telefono']."</td><td>".$row['email']."</td><td>".$row['cv_file']."</td></tr>";	
     }
     echo "</table>";
 	  }catch(PDOException $err) {
@@ -107,6 +108,80 @@ $num_paginas = intval($_POST['pagina'] ?? 1);
     <input type="submit" name="siguiente_pagina" value=">">
     <input type="submit" name="ultima_pagina" value=">>" <?php ?>>
   </form>
+
+  
+  <h2>Insertar alumno nuevo:</h2>
+  <form action="alumnos.php" method="post">
+  <label for="nia">NIA*: </label>
+  <input type="text" name="nia" id="nia" pattern="[0-9]{8}">
+  <label for="nombre_i">Nombre*: </label>
+  <input type="text" name="nombre_i" id="nombre_i">
+  <label for="telefono">Telefono: </label>
+  <input type="text" name="telefono" id="telefono">
+  <label for="email">Email: </label>
+  <input type="text" name="email" id="email">
+
+  <input type="submit" value="Insertar">
+  <input type="reset" value="Reset">
+</form>
+  <?php
+  try{
+    if(isset($_POST['nia']) && !empty($_POST['nia'])) {
+      
+      $nia=$_POST['nia'];
+
+      //Se comprueba que el nia no está repetido
+      $comprobarNia = $pdo->prepare("SELECT COUNT(*) FROM alumno WHERE nia = :nia");
+      $comprobarNia->bindParam(':nia', $nia);
+      $comprobarNia->execute();
+      $comprobar = $comprobarNia->fetchColumn(); //se guarda en una variable las filas que coinciden con el nia introducido
+
+      if($comprobar == 0){//cuando no hay filas que coincidan con el nia introducido entonces se introducen el resto de datos
+        
+        $nombre_i=$_POST['nombre_i'] ?? null;
+        $telefono=$_POST['telefono'] ?? null;
+        $email = $_POST['email'] ?? null;
+
+        $sql = "insert into alumno (nia, nombre, telefono, email) values (:nia, :nombre, :telefono, :email)";
+        $datos = [":nia"=>$nia, ":nombre"=>$nombre_i, ":telefono"=>$telefono, ":email"=>$email];
+        $stmt = $pdo->prepare($sql);
+        $row = $stmt->execute($datos);
+
+        echo "<h3>SE HA ENVIADO CORRECTAMENTE<h3>";
+      }else{
+        echo "<h3>El NIA introducido ya existe</h3>";
+      }
+    }
+  }catch(PDOException $e) {
+  echo $e->getMessage();
+  }
+  ?>
+  
+  <h2>Eliminar alumno:</h2>
+  <form action="alumnos.php" method="post">
+  <label for="nia">NIA*: </label>
+  <input type="text" name="nia_d" id="nia_d" pattern="[0-9]{8}">
+
+  <input type="submit" value="Eliminar">
+  <input type="reset" value="Reset">
+
+  <?php
+  try{
+    $nia_d = $_POST['nia_d'] ?? null;
+  if(isset($_POST["nia_d"])){
     
+
+    $sql = "DELETE FROM alumno where nia = :nia"; 
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':nia',$nia_d);
+    $stmt->execute();
+
+    echo "Alumno con NIA $nia_d eliminado correctamente.";
+  }
+  }catch(PDOException $e){
+    echo $e->getMessage();
+  }
+  ?>
+
 </body>
 </html>
