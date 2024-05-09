@@ -8,7 +8,6 @@ $alumno = array(); //array para guardar los datos del alumno
 <?php
 
   $nombre=$_POST['nombre'] ?? null;
-  $num_paginas = intval($_POST['pagina'] ?? 1);
   $host='localhost';
   $dbname='gestion_fct';
   $user='root';
@@ -18,9 +17,8 @@ $alumno = array(); //array para guardar los datos del alumno
   $total_paginas = 0;
 
   try{
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);
     $pdo->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
-    $pdo->query("SELECT 1");
   }
   catch(PDOException $e) {
     echo $e->getMessage();
@@ -50,22 +48,46 @@ $alumno = array(); //array para guardar los datos del alumno
 <?php
 
     try {
+    
+
     //Total registros
-    $total_registros_query = $pdo->query("SELECT count(*) FROM alumno");
-    $total_registros = $total_registros_query->fetchColumn();
+    $sql_registros = "SELECT count(*) FROM alumno";
+    $gsent = $pdo->prepare($sql_registros);
+    $gsent->execute();
+    $total_registros = $gsent->fetch(PDO::FETCH_ASSOC);
+    $total_registros_int = intval($total_registros['count(*)']);
+
+    
 
     //Calculo del número total de páginas
     $registros_pagina = 10;
-    $total_paginas = ceil($total_registros / $registros_pagina);
+    $total_paginas = ceil($total_registros_int / $registros_pagina);
     
 
     //Calculo del registro desde el que comienza la pagina 
     $registros = ($num_paginas-1)*$registros_pagina;
 
-    
-    $sql = "SELECT nia, nombre, cv_file, telefono,email FROM alumno where true limit $registros, $registros_pagina";
+    //Calculo paginacion
+
+    if(isset($_POST["siguiente_pagina"])){
+      ++$num_paginas;
+    }
+    if(isset($_POST["pagina_anterior"])){ 
+    if($num_paginas<$total_paginas){
+      --$num_paginas;
+    }
+    }
+    if(isset($_POST["ultima_pagina"])){ 
+    $num_paginas = $total_paginas;
+    }
+    if(isset($_POST["primera_pagina"])){ 
+    $num_paginas = 1;
+  }
+  
+
+    $sql = "SELECT nia, nombre, cv_file, telefono,email FROM alumno where true ORDER BY nia limit $registros, 10";
     if(isset($_POST["nombre_B"])){
-      $sql = "SELECT nia, nombre, cv_file,telefono ,email FROM alumno where true and nombre like :nombre limit $registros, $registros_pagina"; 
+      $sql = "SELECT nia, nombre, cv_file,telefono ,email FROM alumno where true and nombre like :nombre ORDER BY nia limit $registros, $registros_pagina"; 
     }
     $gsent = $pdo->prepare($sql);
     if(isset($_POST["nombre_B"])){
@@ -115,22 +137,9 @@ $alumno = array(); //array para guardar los datos del alumno
     echo "Error al ejecutar la consulta"; 
 	  }
     ?>
-  <?php
-  if(isset($_POST["siguiente_pagina"])){
-      ++$num_paginas;
-  }
-  if(isset($_POST["pagina_anterior"])){ 
-    if($num_paginas<$total_paginas){
-      --$num_paginas;
-    }
-  }
-  if(isset($_POST["ultima_pagina"])){ 
-    $num_paginas = $total_paginas;
-  }
-  if(isset($_POST["primera_pagina"])){ 
-    $num_paginas = 1;
-  }
-  
+    <?php
+    
+    
   ?>
 
    <!--Paginación-->
@@ -164,10 +173,11 @@ $alumno = array(); //array para guardar los datos del alumno
   $telefono_M = $_POST['telefono']??null;
   $email_M = $_POST['email']??null;
 
+  
   $sql = "UPDATE alumno SET nombre = :nombre_M, telefono = :telefono_M, email = :email_M WHERE nia = :nia_M";
   $stmt = $pdo->prepare($sql);
 
-  
+
   //ejecuta la consulta para actualizar los datos
   $stmt->execute([
     ':nombre_M' => $nombre_M,
@@ -175,7 +185,7 @@ $alumno = array(); //array para guardar los datos del alumno
     ':email_M' => $email_M,
     ':nia_M' => $nia_M
   ]);
-
+  
 
   }
   ?>
@@ -247,6 +257,8 @@ $alumno = array(); //array para guardar los datos del alumno
     echo $e->getMessage();
   }
   ?>
+
+ 
 
 </body>
 </html>
