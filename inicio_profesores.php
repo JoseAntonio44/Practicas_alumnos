@@ -38,7 +38,7 @@ $alumno = array(); //array para guardar los datos del alumno
     <title>Alumnos</title>
 </head>
 <body>
-<form action="alumnos.php" method="post">
+<form action="inicio_profesores.php" method="post">
   	<label for="nombre">NOMBRE: </label>
   	<input type="text" name="nombre_B" id="nombre" value="<?php echo $nombre_B?>">
   	<input type="submit" value="Buscar">
@@ -106,13 +106,13 @@ $alumno = array(); //array para guardar los datos del alumno
 
       // Boton "Editar"
       echo "<td>";
-      echo "<form method='post' action='alumnos.php'>";
+      echo "<form method='post' action='inicio_profesores.php'>";
       echo "<input type='hidden' name='nia' value='" . $row['nia'] . "'>";
       echo "<input type='submit' value='Editar'>";
       echo "</form>";
 
       // Boton "Eliminar"
-      echo "<td><form method='post' action='alumnos.php'>
+      echo "<td><form method='post' action='inicio_profesores.php'>
             <input type='hidden' name='nia_d' value='" . $row['nia'] . "'>
             <input type='submit' name='eliminar_alumno' value='Eliminar'></form></td>";
 
@@ -143,7 +143,7 @@ $alumno = array(); //array para guardar los datos del alumno
   ?>
 
    <!--Paginación-->
-  <form action="alumnos.php" method="post">
+  <form action="inicio_profesores.php" method="post">
     <input type="submit" name="primera_pagina" value="<<" <?php ?>>
     <input type="submit" name="pagina_anterior" value="<" <?php ?>>
     <input type="text" name="pagina" value="<?php echo $num_paginas?>">
@@ -157,7 +157,7 @@ $alumno = array(); //array para guardar los datos del alumno
 
   <!--Formulario editar datos alumno-->
   <h2>Editar alumno</h2>
-    <form method="post" action="alumnos.php">
+    <form method="post" action="inicio_profesores.php">
             <input type="hidden" name="nia" value="<?php echo $alumno['nia']; ?>">
             Nombre: <input type="text" name="nombre" value="<?php echo $alumno['nombre']; ?>"><br>
             Telefono: <input type="text" name="telefono" value="<?php echo $alumno['telefono']; ?>"><br>
@@ -191,7 +191,7 @@ $alumno = array(); //array para guardar los datos del alumno
   ?>
 
   <h2>Insertar alumno nuevo:</h2>
-  <form action="alumnos.php" method="post">
+  <form action="inicio_profesores.php" method="post">
   <label for="nia_I">NIA*: </label>
   <input type="text" name="nia_I" id="nia_I" pattern="[0-9]{8}">
   <label for="nombre_i">Nombre*: </label>
