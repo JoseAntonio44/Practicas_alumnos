@@ -34,7 +34,7 @@ $alumno = array(); //array para guardar los datos del alumno
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/AlumnoCSS.css">
+    <link rel="stylesheet" href="css/inicio_profesoresCSS.css">
     <title>Alumnos</title>
 </head>
 <body>
