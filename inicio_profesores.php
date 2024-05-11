@@ -6,7 +6,8 @@ $alumno = array(); //array para guardar los datos del alumno
 
 ?>
 <?php
-
+  //hacer un formulario que sirva para modificar y añadir alumnos
+  
   $nombre=$_POST['nombre'] ?? null;
   $host='localhost';
   $dbname='gestion_fct';
