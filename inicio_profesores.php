@@ -59,7 +59,7 @@ try {
     $telefono = $_POST['telefono'];
     $email = $_POST['email'];
 
-    // Actualizar los datos del alumno en la base de datos
+    //Actualiza los datos del alumno en la base de datos
     $sql = "UPDATE alumno SET nombre = :nombre, telefono = :telefono, email = :email WHERE nia = :nia";
     $stmt = $pdo->prepare($sql);
 
@@ -70,6 +70,30 @@ try {
     $stmt->execute();
     echo "Alumno actualizado correctamente.";
   }
+
+  //Añadir alumno
+  $nia = $_POST['nia'] ?? null;
+  $nombre = $_POST['nombre'] ?? null;
+  $telefono = $_POST['telefono'] ?? null;
+  $email = $_POST['email'] ?? null;
+
+  if (isset($_POST['insertar'])) {
+
+
+    //Inserta un nuevo alumno en la base de datos
+    $sql = "INSERT INTO alumno (nia, nombre, telefono, email) VALUES (:nia, :nombre, :telefono, :email)";
+    $stmt = $pdo->prepare($sql);
+
+    $stmt->bindParam(':nia', $nia);
+    $stmt->bindParam(':nombre', $nombre);
+    $stmt->bindParam(':telefono', $telefono);
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+
+
+    echo "<script>alert('Alumno $nombre añadido correctamente')</script>";
+  }
+
 
   //Eliminar alumno
   try {
@@ -159,7 +183,13 @@ try {
     $gsent->execute();
 
     echo "<table>";
-    echo "<tr><th>NIA</th><th>Nombre</th><th>Telefono</th><th>Email</th><th>CV</th></tr>";
+    echo "<tr><th>NIA</th><th>Nombre</th><th>Telefono</th><th>Email</th><th>CV</th>
+    <th colspan='2'>
+    <form method='post' action='inicio_profesores.php'>
+    <input type='submit' name='insertar_alumno' value='Insertar alumno'>
+    </form>
+    </th>
+    </tr>";
     while ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
       echo "<tr><td>" . $row['nia'] . "</td><td>"
         . $row['nombre'] . "</td><td>"
@@ -193,6 +223,7 @@ try {
   }
 
   if (isset($_POST['editar'])) {
+    //Formulario de editar alumno
 
     $nia = $_POST['nia'];
     $nombre = $_POST['nombre'];
@@ -202,46 +233,36 @@ try {
     ?>
 
     <form method='post' action='inicio_profesores.php'>
-
       <input type='hidden' name='nia' value='<?php echo $nia; ?>'>
-
       <label for='nombre'>Nombre: </label>
       <input type='text' name='nombre' value='<?php echo $nombre; ?>'><br>
-
       <label for='telefono_edit'>Teléfono: </label>
       <input type='text' name='telefono' value='<?php echo $telefono; ?>'><br>
-
       <label for='email'>Email: </label>
       <input type='text' name='email' value='<?php echo $email; ?>'><br>
-
       <input type='submit' name='guardar_edicion' value='Guardar'>
     </form>
 
+
   <?php
-
-
-    //si nia old actualizar
-
-
-
-
   }
+  //Formulario de insertar alumno
+  if (isset($_POST['insertar_alumno'])) {
+    ?>
 
-
-
-  // Insertar un nuevo alumno en la base de datos
-  /*$sql = "INSERT INTO alumno (nia, nombre, telefono, email) VALUES (:nia, :nombre, :telefono, :email)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':nia', $nia);
-        $stmt->bindParam(':nombre', $nombre);
-        $stmt->bindParam(':telefono', $telefono);
-        $stmt->bindParam(':email', $email);
-        $stmt->execute();*/
-
-
-
-
-
+    <form method='post' action='inicio_profesores.php'>
+      <label for='nia'>NIA: </label>
+      <input type='text' name='nia'><br>
+      <label for='nombre'>Nombre: </label>
+      <input type='text' name='nombre'><br>
+      <label for='telefono'>Telefono: </label>
+      <input type='text' name='telefono'><br>
+      <label for='email'>Email: </label>
+      <input type='text' name='email'><br>
+      <input type='submit' name='insertar' value='Insertar'>
+    </form>
+  <?php
+  }
   ?>
 
 
