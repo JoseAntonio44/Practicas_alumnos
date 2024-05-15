@@ -4,14 +4,6 @@ body {
     align-items: center;
     margin: 0px;
 }
-header {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    background-color: #1C4040;
-    color: white;
-    height: 100px;
-}
 div{
     display: flex;
     flex-direction: column;
@@ -63,6 +55,30 @@ th {
     text-align: left;
     padding: 8px;
 }
+#boton_logout {
+    border-radius: 10px;
+}
+header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #1C4040;
+    color: white;
+    height: 100px;
+    justify-content: space-between;
+    align-items: center;
+}
+header p{
+    font-size: 40px;
+    margin-left: 20px;
+}
+form{
+    display: flex;
+    justify-content: center;
+    height: 30px;
+}
+
+
 
 
 

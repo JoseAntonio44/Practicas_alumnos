@@ -1,4 +1,6 @@
 <?php
+//TODO: Corregir que se quedan varios 'radios' seleccionados.
+
 require_once 'validar_sesion.php';
 
 $host = 'localhost';
@@ -31,10 +33,24 @@ try {
 
 <body>
 
+    <?php
+    $user = $_SESSION['usuario'];
+
+    $sql = "SELECT nombre FROM alumno WHERE email='$user'";
+    $gsent = $pdo->prepare($sql);
+    $gsent->execute();
+
+    $nombreUsu = null;
+    if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
+        $nombreUsu = $row['nombre'];
+    }
+
+    ?>
+
     <header>
-        <p>Bienvenido <?php echo $_SESSION['usuario'] ?></p>
+        <p>Bienvenido <?php echo $nombreUsu?>!</p>
         <form action="inicio_alumnos.php" method="post">
-            <input type="submit" name="logout" value="Cerrar Sesión">
+            <input type="submit" id="boton_logout" name="logout" value="Cerrar Sesión">
             <?php
             if (isset($_POST['logout'])) {
                 session_destroy();
@@ -48,7 +64,7 @@ try {
         <div>
             <?php
 
-            $user = $_SESSION['usuario'];
+
 
             //Tabla para mostrar el estado de la FCT
             $sql = "SELECT comentario, fecha, estado_id FROM estados_historico WHERE practica_id = 4;";
@@ -105,7 +121,7 @@ try {
         while ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
             echo "<tr><td>"
                 //Con la casilla selecciona el alumno la empresa para ponerlo en sus prioridades
-                ."<form action=\"inicio_alumnos.php\" method=\"post\"> <input type=\"radio\" name=\"empresa\" value=\"".$row['nombre']."\">
+                . "<form action=\"inicio_alumnos.php\" method=\"post\"> <input type=\"radio\" name=\"empresa\" value=\"" . $row['nombre'] . "\">
                 <input type=\"submit\" value=\"Seleccionar\"></form></td><td>"
                 . $row['nombre'] . "</td><td>"
                 . $row['cif'] . "</td><td>"
@@ -128,13 +144,13 @@ try {
         //Para que no se pueda asignar 2 veces la misma empresa hay 2 opciones
         //1. No mostrar las empresas ya elegidas (Opcion escogida)
         //2. Mostrar las empresas que no han sido elegidas y evitar la inserción mediante la consulta sql
-        
+
 
         ?>
     </section>
 
-    
-    
+
+
 
 
 

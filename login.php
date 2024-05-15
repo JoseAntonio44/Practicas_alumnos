@@ -73,7 +73,9 @@ try {
         exit();
       } else {
 
-        echo 'Usuario o contraseña incorrectos.';
+        echo '<script>
+              alert("Usuario o contraseña incorrectos");
+              </script>';
       }
     }
   }
