@@ -134,7 +134,7 @@ try {
 
         $nombre = $_POST['empresa'] ?? null;
 
-        if ($nombre != null) {                                             //aquí iria el correo del alumno logueado
+        if ($nombre != null) {                                            
             $sql = "INSERT INTO prioridades (alumno_id, empresa_id) VALUES ('$user', '$nombre')";
             $gsent = $pdo->prepare($sql);
             $gsent->execute();

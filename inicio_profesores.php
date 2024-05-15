@@ -49,6 +49,49 @@ try {
       ?>
     </form>
   </header>
+  <?php
+  //Procesamiento de formularios
+
+  //Editar el alumno
+  if (isset($_POST['guardar_edicion'])) {
+    $nia = $_POST['nia'];
+    $nombre = $_POST['nombre'];
+    $telefono = $_POST['telefono'];
+    $email = $_POST['email'];
+
+    // Actualizar los datos del alumno en la base de datos
+    $sql = "UPDATE alumno SET nombre = :nombre, telefono = :telefono, email = :email WHERE nia = :nia";
+    $stmt = $pdo->prepare($sql);
+
+    $stmt->bindParam(':nia', $nia);
+    $stmt->bindParam(':nombre', $nombre);
+    $stmt->bindParam(':telefono', $telefono);
+    $stmt->bindParam(':email', $email);
+    $stmt->execute();
+    echo "Alumno actualizado correctamente.";
+  }
+
+  //Eliminar alumno
+  try {
+
+    if (isset($_POST["eliminar_alumno"])) {
+
+      $nia_d = $_POST['nia_d'] ?? null;
+
+      $sql = "DELETE FROM alumno where nia = :nia";
+      $stmt = $pdo->prepare($sql);
+      $stmt->bindParam(':nia', $nia_d);
+      $stmt->execute();
+
+
+      echo "Alumno con NIA $nia_d eliminado correctamente.";
+    }
+  } catch (PDOException $e) {
+    echo $e->getMessage();
+  }
+
+
+  ?>
   <form action="inicio_profesores.php" method="post">
     <label for="nombre">NOMBRE: </label>
     <input type="text" name="nombre_B" id="nombre" value="<?php echo $nombre_B ?>">
@@ -68,7 +111,7 @@ try {
 
     $total_paginas = ceil($total_registros / $registros_pagina);
 
-    //pasar de pagina y retroceder
+    //Pasar de pagina y retroceder
     if ($num_paginas < $total_paginas) {
       if (isset($_POST["siguiente_pagina"])) {
 
@@ -80,11 +123,12 @@ try {
         $num_paginas--;
       }
     }
+
+
     //Ultima y primera pagina
     if (isset($_POST["ultima_pagina"])) {
       $num_paginas = $total_paginas;
     }
-
     if (isset($_POST["primera_pagina"])) {
       $num_paginas = 1;
     }
@@ -97,10 +141,13 @@ try {
 
 
     <?php
-    //Ejecucion de la consulta 
+
+    //Ejecucion de la consulta para mostrar la tabla
     $sql = "SELECT nia, nombre, cv_file, telefono,email FROM alumno where true ORDER BY nia limit $registros, 10";
+
+    //Procesamiento de formulario de busqueda
     if (isset($_POST["nombre_B"])) {
-      $sql = "SELECT nia, nombre, cv_file,telefono ,email FROM alumno where true and nombre like :nombre ORDER BY nia";
+      $sql = "SELECT nia, nombre, cv_file,telefono ,email FROM alumno where true and nombre like :nombre ORDER BY nia limit $registros, 10";
     }
     $gsent = $pdo->prepare($sql);
     if (isset($_POST["nombre_B"])) {
@@ -109,17 +156,20 @@ try {
 
       $gsent->bindParam(':nombre', $nombre_B, PDO::PARAM_STR);
     }
-
     $gsent->execute();
 
     echo "<table>";
     echo "<tr><th>NIA</th><th>Nombre</th><th>Telefono</th><th>Email</th><th>CV</th></tr>";
     while ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
-      echo "<tr><td>" . $row['nia'] . "</td><td>" . $row['nombre'] . "</td><td>" . $row['telefono'] . "</td><td>" . $row['email'] . "</td><td>" . $row['cv_file'] . "</td>";
+      echo "<tr><td>" . $row['nia'] . "</td><td>"
+        . $row['nombre'] . "</td><td>"
+        . $row['telefono'] . "</td><td>"
+        . $row['email'] . "</td><td>"
+        . $row['cv_file'] . "</td>";
 
       // Boton "Editar"
 
-      echo "<td><form method='post' action=''>
+      echo "<td><form method='post' action='inicio_profesores.php'>
       <input type='hidden' name='nia' value='" . $row['nia'] . "'>
       <input type='hidden' name='nombre' value='" . $row['nombre'] . "'>
       <input type='hidden' name='telefono' value='" . $row['telefono'] . "'>
@@ -143,13 +193,16 @@ try {
   }
 
   if (isset($_POST['editar'])) {
+
     $nia = $_POST['nia'];
     $nombre = $_POST['nombre'];
     $telefono = $_POST['telefono'];
     $email = $_POST['email'];
+
     ?>
 
     <form method='post' action='inicio_profesores.php'>
+
       <input type='hidden' name='nia' value='<?php echo $nia; ?>'>
 
       <label for='nombre'>Nombre: </label>
@@ -165,28 +218,15 @@ try {
     </form>
 
   <?php
-    if (isset($_POST['guardar_edicion'])) {
-      // Obtener los datos actualizados del formulario
-      $nia = $_POST['nia'];
-      $nombre = $_POST['nombre'];
-      $telefono = $_POST['telefono'];
-      $email = $_POST['email'];
 
-      // Actualizar los datos del alumno en la base de datos
-      $sql = "UPDATE alumno SET nombre = :nombre, telefono = :telefono, email = :email WHERE nia = :nia";
-      $stmt = $pdo->prepare($sql);
-      $stmt->bindParam(':nia', $nia);
-      $stmt->bindParam(':nombre', $nombre);
-      $stmt->bindParam(':telefono', $telefono);
-      $stmt->bindParam(':email', $email);
-      try {
-        $stmt->execute();
-        echo "Alumno actualizado correctamente.";
-      } catch (PDOException $e) {
-        echo "Error al actualizar el alumno: " . $e->getMessage();
-      }
-    }
+
+    //si nia old actualizar
+
+
+
+
   }
+
 
 
   // Insertar un nuevo alumno en la base de datos
@@ -218,26 +258,6 @@ try {
 
 
 
-  <?php
-  //Eliminar alumno
-  try {
-
-    if (isset($_POST["eliminar_alumno"])) {
-
-      $nia_d = $_POST['nia_d'] ?? null;
-
-      $sql = "DELETE FROM alumno where nia = :nia";
-      $stmt = $pdo->prepare($sql);
-      $stmt->bindParam(':nia', $nia_d);
-      $stmt->execute();
-
-
-      echo "Alumno con NIA $nia_d eliminado correctamente.";
-    }
-  } catch (PDOException $e) {
-    echo $e->getMessage();
-  }
-  ?>
 
   <!--Paginación-->
   <form action="inicio_profesores.php" method="post">
