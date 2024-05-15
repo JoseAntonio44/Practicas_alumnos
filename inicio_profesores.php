@@ -207,10 +207,6 @@ try {
       <input type='submit' name='editar' value='Editar'>
       </form></td>";
 
-
-
-
-
       // Boton "Eliminar"
       echo "<td><form method='post' action='inicio_profesores.php'>
             <input type='hidden' name='nia_d' value='" . $row['nia'] . "'>
@@ -222,8 +218,8 @@ try {
     echo "Error al ejecutar la consulta";
   }
 
-  if (isset($_POST['editar'])) {
-    //Formulario de editar alumno
+  if (isset($_POST['editar']) && !isset($_POST['cancelar'])) {
+    
 
     $nia = $_POST['nia'];
     $nombre = $_POST['nombre'];
@@ -232,6 +228,7 @@ try {
 
     ?>
 
+    <!-- Formulario de edición -->
     <form method='post' action='inicio_profesores.php'>
       <input type='hidden' name='nia' value='<?php echo $nia; ?>'>
       <label for='nombre'>Nombre: </label>
@@ -241,15 +238,17 @@ try {
       <label for='email'>Email: </label>
       <input type='text' name='email' value='<?php echo $email; ?>'><br>
       <input type='submit' name='guardar_edicion' value='Guardar'>
+      <input type='submit' name='cancelar' value='Cancelar'>
     </form>
 
 
   <?php
   }
-  //Formulario de insertar alumno
-  if (isset($_POST['insertar_alumno'])) {
+  
+  if (isset($_POST['insertar_alumno']) && !isset($_POST['cancelar'])) {
     ?>
 
+    <!-- Formulario de inserción -->
     <form method='post' action='inicio_profesores.php'>
       <label for='nia'>NIA: </label>
       <input type='text' name='nia'><br>
@@ -260,25 +259,11 @@ try {
       <label for='email'>Email: </label>
       <input type='text' name='email'><br>
       <input type='submit' name='insertar' value='Insertar'>
+      <input type='submit' name='cancelar' value='Cancelar'>
     </form>
   <?php
   }
   ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   <!--Paginación-->
   <form action="inicio_profesores.php" method="post">
