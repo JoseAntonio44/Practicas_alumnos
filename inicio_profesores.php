@@ -4,6 +4,9 @@ $num_paginas = intval($_POST['pagina'] ?? 1);
 
 ?>
 <?php
+  //hacer un formulario que sirva para modificar y añadir alumnos
+  
+  $nombre=$_POST['nombre'] ?? null;
   $host='localhost';
   $dbname='gestion_fct';
   $user='root';
