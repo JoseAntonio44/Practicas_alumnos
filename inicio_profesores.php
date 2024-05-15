@@ -164,7 +164,7 @@ try {
   ?>
 
 
-    <?php
+  <?php
 
     //Ejecucion de la consulta para mostrar la tabla
     $sql = "SELECT nia, nombre, cv_file, telefono,email FROM alumno where true ORDER BY nia limit $registros, 10";
@@ -218,18 +218,28 @@ try {
     echo "Error al ejecutar la consulta";
   }
 
+  ?>
+  <!--Paginación-->
+  <form action="inicio_profesores.php" method="post" id="paginacion">
+    <input type="submit" name="primera_pagina" value="<<" <?php ?>>
+    <input type="submit" name="pagina_anterior" value="<" <?php ?>>
+    <input type="text" name="pagina" value="<?php echo $num_paginas ?>">
+    <input type="submit" name="siguiente_pagina" value=">">
+    <input type="submit" name="ultima_pagina" value=">>" <?php ?>>
+  </form>
+  <?php
   if (isset($_POST['editar']) && !isset($_POST['cancelar'])) {
-    
+
 
     $nia = $_POST['nia'];
     $nombre = $_POST['nombre'];
     $telefono = $_POST['telefono'];
     $email = $_POST['email'];
 
-    ?>
+  ?>
 
     <!-- Formulario de edición -->
-    <form method='post' action='inicio_profesores.php'>
+    <form method='post' action='inicio_profesores.php' id='insercion_edicion'>
       <input type='hidden' name='nia' value='<?php echo $nia; ?>'>
       <label for='nombre'>Nombre: </label>
       <input type='text' name='nombre' value='<?php echo $nombre; ?>'><br>
@@ -244,12 +254,12 @@ try {
 
   <?php
   }
-  
+
   if (isset($_POST['insertar_alumno']) && !isset($_POST['cancelar'])) {
-    ?>
+  ?>
 
     <!-- Formulario de inserción -->
-    <form method='post' action='inicio_profesores.php'>
+    <form method='post' action='inicio_profesores.php' id='insercion_edicion'>
       <label for='nia'>NIA: </label>
       <input type='text' name='nia'><br>
       <label for='nombre'>Nombre: </label>
@@ -265,14 +275,7 @@ try {
   }
   ?>
 
-  <!--Paginación-->
-  <form action="inicio_profesores.php" method="post">
-    <input type="submit" name="primera_pagina" value="<<" <?php ?>>
-    <input type="submit" name="pagina_anterior" value="<" <?php ?>>
-    <input type="text" name="pagina" value="<?php echo $num_paginas ?>">
-    <input type="submit" name="siguiente_pagina" value=">">
-    <input type="submit" name="ultima_pagina" value=">>" <?php ?>>
-  </form>
+
 
 
 </body>

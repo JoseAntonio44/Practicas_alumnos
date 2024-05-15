@@ -1,3 +1,9 @@
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0px;
+}
 table {
     width: 100%;
 }
@@ -5,4 +11,19 @@ th, td {
     border: 1px solid black;
     text-align: left;
     padding: 8px;
+}
+#paginacion {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    margin-bottom: 15px;
+    
+}
+
+#insercion_edicion{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0px;
+    max-width: 400px;
 }
