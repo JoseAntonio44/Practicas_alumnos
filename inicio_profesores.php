@@ -1,4 +1,5 @@
 <?php
+require_once 'validar_sesion.php';
 $nombre_B = $_POST['nombre_B'] ?? null;
 $num_paginas = intval($_POST['pagina'] ?? 1);
 
@@ -36,6 +37,18 @@ try {
 </head>
 
 <body>
+  <header>
+    <p>Bienvenido <?php echo $_SESSION['usuario'] ?></p>
+    <form action="inicio_alumnos.php" method="post">
+      <input type="submit" name="logout" value="Cerrar Sesión">
+      <?php
+      if (isset($_POST['logout'])) {
+        session_destroy();
+        header('Location: login.php');
+      }
+      ?>
+    </form>
+  </header>
   <form action="inicio_profesores.php" method="post">
     <label for="nombre">NOMBRE: </label>
     <input type="text" name="nombre_B" id="nombre" value="<?php echo $nombre_B ?>">
@@ -80,7 +93,7 @@ try {
     //Calculo del registro desde el que comienza la pagina 
     $registros = ($num_paginas - 1) * $registros_pagina;
 
-    ?>
+  ?>
 
 
     <?php
@@ -134,7 +147,7 @@ try {
     $nombre = $_POST['nombre'];
     $telefono = $_POST['telefono'];
     $email = $_POST['email'];
-  ?>
+    ?>
 
     <form method='post' action='inicio_profesores.php'>
       <input type='hidden' name='nia' value='<?php echo $nia; ?>'>

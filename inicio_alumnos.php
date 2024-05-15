@@ -48,6 +48,8 @@ try {
         <div>
             <?php
 
+            $user = $_SESSION['usuario'];
+
             //Tabla para mostrar el estado de la FCT
             $sql = "SELECT comentario, fecha, estado_id FROM estados_historico WHERE practica_id = 4;";
             //De momento se muestra el estado de la FCT de este alumno pero en un futuro se mostrará del usuario logueado
@@ -65,7 +67,8 @@ try {
             $sql = "SELECT p.empresa_id, c.comentario, c.hablado_con, c.hablado_por, c.fecha
             FROM comentario c
             JOIN prioridades p ON p.id = c.prioridad_id
-            WHERE p.alumno_id =\"alumno100@example.com\"";
+            WHERE p.alumno_id = '$user'";
+
 
             $gsent = $pdo->prepare($sql);
             $gsent->execute();
@@ -90,7 +93,7 @@ try {
         //Tabla para mostrar las empresas y que el alumno elija la que quiera
         $sql = "SELECT nombre, cif, email, CONCAT_WS(', ', direccion, localidad, provincia) AS direccion, telefono, persona_contacto 
             FROM empresa 
-            WHERE nombre NOT IN (SELECT empresa_id FROM prioridades WHERE alumno_id = \"alumno100@example.com\");";
+            WHERE nombre NOT IN (SELECT empresa_id FROM prioridades WHERE alumno_id = '$user')";
 
         $gsent = $pdo->prepare($sql);
         $gsent->execute();
@@ -102,8 +105,8 @@ try {
         while ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
             echo "<tr><td>"
                 //Con la casilla selecciona el alumno la empresa para ponerlo en sus prioridades
-                . "<form action=\"inicio_alumnos.php\" method=\"post\"> <input type=\"radio\" name=\"empresa\" value=\"" . $row['nombre'] . "\">
-      <input type=\"submit\" value=\"Seleccionar\"></form></td><td>"
+                ."<form action=\"inicio_alumnos.php\" method=\"post\"> <input type=\"radio\" name=\"empresa\" value=\"".$row['nombre']."\">
+                <input type=\"submit\" value=\"Seleccionar\"></form></td><td>"
                 . $row['nombre'] . "</td><td>"
                 . $row['cif'] . "</td><td>"
                 . $row['email'] . "</td><td>"
@@ -116,7 +119,7 @@ try {
         $nombre = $_POST['empresa'] ?? null;
 
         if ($nombre != null) {                                             //aquí iria el correo del alumno logueado
-            $sql = "INSERT INTO prioridades (alumno_id, empresa_id) VALUES ('alumno100@example.com', '$nombre')";
+            $sql = "INSERT INTO prioridades (alumno_id, empresa_id) VALUES ('$user', '$nombre')";
             $gsent = $pdo->prepare($sql);
             $gsent->execute();
             echo "<script>alert('La empresa $nombre se ha añadido correctamente a sus prioridades');</script>";
@@ -125,11 +128,13 @@ try {
         //Para que no se pueda asignar 2 veces la misma empresa hay 2 opciones
         //1. No mostrar las empresas ya elegidas (Opcion escogida)
         //2. Mostrar las empresas que no han sido elegidas y evitar la inserción mediante la consulta sql
-
+        
 
         ?>
     </section>
 
+    
+    
 
 
 

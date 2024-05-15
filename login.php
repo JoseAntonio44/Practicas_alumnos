@@ -42,28 +42,42 @@ try {
 
 
   <?php
-  if(isset($_POST['usuario']) && isset($_POST['contraseña'])) {
-  // Obtener los datos del formulario
-  $usuario = $_POST['usuario'];
-  $contrasena = $_POST['contraseña'];
+  if (isset($_POST['usuario']) && isset($_POST['contraseña'])) {
+    // Obtiene los datos del formulario
+    $usuario = $_POST['usuario'];
+    $contrasena = $_POST['contraseña'];
 
-  // Seleccionar el usuario de la base de datos
-  $sql = "SELECT * FROM alumno WHERE email = '$usuario' AND password = '$contrasena'";
-  $result = $pdo->query($sql);
+    $sqlTutor = "SELECT * FROM tutor WHERE email = '$usuario' AND password = '$contrasena'";
+    $resultTutor = $pdo->query($sqlTutor);
 
-  // Comprobar si el usuario existe
-  if ($result->rowCount() > 0) {
-    // Iniciar sesión
-    session_start();
-    $_SESSION['usuario'] = $usuario;
+    // Verifica si el usuario es un alumno o es tutor
+    if ($resultTutor->rowCount() > 0) {
+      // Es un tutor
+      session_start();
+      $_SESSION['usuario'] = $usuario;
 
-    // Redirigir a la página principal
-    header('Location: inicio_alumnos.php');
-  } else {
-    // Mostrar un mensaje de error
-    echo 'Usuario o contraseña incorrectos.';
+      // Redirige a la página principal de los profesores
+      header('Location: inicio_profesores.php');
+      exit();
+    } else {
+      $sqlAlumno = "SELECT * FROM alumno WHERE email = '$usuario' AND password = '$contrasena'";
+      $resultAlumno = $pdo->query($sqlAlumno);
+
+      if ($resultAlumno->rowCount() > 0) {
+        // Es un alumno
+        session_start();
+        $_SESSION['usuario'] = $usuario;
+
+        // Redirige a la página principal de los alumnos
+        header('Location: inicio_alumnos.php');
+        exit();
+      } else {
+
+        echo 'Usuario o contraseña incorrectos.';
+      }
+    }
   }
-  }
+
   ?>
 
 </body>
