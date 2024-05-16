@@ -34,6 +34,7 @@ try {
 <body>
 
     <?php
+    
     $user = $_SESSION['usuario'];
 
     $sql = "SELECT nombre FROM alumno WHERE email='$user'";
@@ -105,6 +106,14 @@ try {
         </div>
 
         <?php
+         $nombre = $_POST['empresa'] ?? null;
+         //Añade la empresa a la tabla de prioridades
+         if ($nombre != null) {                                            
+             $sql = "INSERT INTO prioridades (alumno_id, empresa_id) VALUES ('$user', '$nombre')";
+             $gsent = $pdo->prepare($sql);
+             $gsent->execute();
+             echo "<script>alert('La empresa $nombre se ha añadido correctamente a sus prioridades');</script>";
+         }
 
         //Tabla para mostrar las empresas y que el alumno elija la que quiera
         $sql = "SELECT nombre, cif, email, CONCAT_WS(', ', direccion, localidad, provincia) AS direccion, telefono, persona_contacto 
@@ -116,13 +125,15 @@ try {
 
         echo "<table>";
 
-        echo "<tr><th id=\"encabezado_tabla\" colspan=\"7\">Elegir empresa</th></tr>";
-        echo "<tr><th>Seleccionar</th><th>Nombre</th><th>CIF</th><th>Email</th><th>Direccion</th><th>Telefono</th><th>Persona de contacto</th></tr>";
+        echo "<tr><th id='encabezado_tabla' colspan='7'>Elegir empresa</th></tr>";
+        echo "<tr><th></th><th>Nombre</th><th>CIF</th><th>Email</th><th>Direccion</th><th>Telefono</th><th>Persona de contacto</th></tr>";
         while ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
             echo "<tr><td>"
                 //Con la casilla selecciona el alumno la empresa para ponerlo en sus prioridades
-                . "<form action=\"inicio_alumnos.php\" method=\"post\"> <input type=\"radio\" name=\"empresa\" value=\"" . $row['nombre'] . "\">
-                <input type=\"submit\" value=\"Seleccionar\"></form></td><td>"
+                . "<form action='inicio_alumnos.php' method='post'> 
+                <input type='hidden' name='empresa' value='".$row['nombre']."'>
+                <input type='submit' value='Seleccionar'>
+                </form></td><td>"
                 . $row['nombre'] . "</td><td>"
                 . $row['cif'] . "</td><td>"
                 . $row['email'] . "</td><td>"
@@ -132,14 +143,7 @@ try {
         }
         echo "</table>";
 
-        $nombre = $_POST['empresa'] ?? null;
-
-        if ($nombre != null) {                                            
-            $sql = "INSERT INTO prioridades (alumno_id, empresa_id) VALUES ('$user', '$nombre')";
-            $gsent = $pdo->prepare($sql);
-            $gsent->execute();
-            echo "<script>alert('La empresa $nombre se ha añadido correctamente a sus prioridades');</script>";
-        }
+       
 
         //Para que no se pueda asignar 2 veces la misma empresa hay 2 opciones
         //1. No mostrar las empresas ya elegidas (Opcion escogida)
