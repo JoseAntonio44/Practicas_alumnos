@@ -111,7 +111,7 @@ try {
       echo "Alumno con NIA $nia_d eliminado correctamente.";
     }
   } catch (PDOException $e) {
-    echo $e->getMessage();
+    echo "ERROR AL ELIMINAR AL ALUMNO";
   }
 
 
