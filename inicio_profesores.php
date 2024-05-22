@@ -48,6 +48,10 @@ try {
       }
       ?>
     </form>
+    <!-- boton para ir a empresas -->
+    <form action="empresas.php" method="post">
+      <input type="submit" name="empresas" value="Empresas">
+    </form>
   </header>
   <?php
   //Procesamiento de formularios
@@ -274,9 +278,6 @@ try {
   <?php
   }
   ?>
-
-
-
 
 </body>
 
