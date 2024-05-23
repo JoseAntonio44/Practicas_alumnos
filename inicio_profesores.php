@@ -37,8 +37,22 @@ try {
 </head>
 
 <body>
+  <?php
+
+  $user = $_SESSION['usuario'];
+
+  $sql = "SELECT nombre FROM tutor WHERE email='$user'";
+  $gsent = $pdo->prepare($sql);
+  $gsent->execute();
+
+  $nombreUsu = null;
+  if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
+    $nombreUsu = $row['nombre'];
+  }
+
+  ?>
   <header>
-    <p>Bienvenido <?php echo $_SESSION['usuario'] ?></p>
+    <p>Bienvenido <?php echo $nombreUsu ?></p>
     <form action="inicio_alumnos.php" method="post">
       <input type="submit" name="logout" value="Cerrar Sesión">
       <?php
