@@ -154,6 +154,7 @@ try {
         $sql = "SELECT nombre, cif, email, CONCAT_WS(', ', direccion, localidad, provincia) AS direccion, telefono, persona_contacto 
             FROM empresa 
             WHERE nombre NOT IN (SELECT empresa_id FROM prioridades WHERE alumno_id = '$user')
+            ORDER BY cif
             LIMIT $registros, $registros_pagina";
 
         $gsent = $pdo->prepare($sql);
