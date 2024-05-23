@@ -48,6 +48,11 @@ try {
 
     ?>
   <header>
+    <!-- boton para ir a tutores -->
+    <form action="inicio_profesores.php" method="post">
+      <input type="submit" name="tutores" value="Atras">
+    </form>
+
     <p>Bienvenido <?php echo $nombreUsu ?></p>
     <form action="empresas.php" method="post">
       <input type="submit" name="logout" value="Cerrar Sesión">
