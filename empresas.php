@@ -1,5 +1,6 @@
 <?php
 require_once 'validar_sesion.php';
+
 $nombre_B = $_POST['nombre_B'] ?? null;
 $num_paginas = intval($_POST['pagina'] ?? 1);
 
@@ -32,8 +33,27 @@ try {
 </head>
 
 <body>
+  <?php
+
+    $user = $_SESSION['usuario'];
+
+    $sql = "SELECT nombre FROM tutor WHERE email='$user'";
+    $gsent = $pdo->prepare($sql);
+    $gsent->execute();
+
+    $nombreUsu = null;
+    if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
+        $nombreUsu = $row['nombre'];
+    }
+
+    ?>
   <header>
-    <p>Bienvenido <?php echo $_SESSION['usuario'] ?></p>
+    <!-- boton para ir a tutores -->
+    <form action="inicio_profesores.php" method="post">
+      <input type="submit" name="tutores" value="Atras">
+    </form>
+
+    <p>Bienvenido <?php echo $nombreUsu ?></p>
     <form action="empresas.php" method="post">
       <input type="submit" name="logout" value="Cerrar Sesión">
       <?php
@@ -117,6 +137,43 @@ try {
   } catch (PDOException $e) {
     echo $e->getMessage();
   }
+
+  // Añadir practica
+  try {
+
+    $alumno = $_POST['alumno_id'] ?? null;
+    $empresa = $_POST['empresa_id'] ?? null;
+    $tutor = $_POST['tutor_id'] ?? null;
+    $instructor = $_POST['instructor_id'] ?? null;
+    $fechaInicio = $_POST['fecha_inicio'] ?? null;
+    $fechaFin = $_POST['fecha_fin'] ?? null;
+    $fechaConfirmacion = $_POST['fecha_confirmacion'] ?? null;
+    $cursoNombre = $_POST['curso_nombre'] ?? null;
+    $curso = $_POST['curso'] ?? null;
+
+
+
+    if (isset($_POST["insertar_practica"])) {
+      $sql = "INSERT INTO practica (alumno_id, empresa_id, tutor_id, instructor_id, fecha_inicio, fecha_fin, fecha_confirmacion, curso_nombre, curso)
+          VALUES (:alumno_id, :empresa_id, :tutor_id, :instructor_id, :fecha_inicio, :fecha_fin, :fecha_confirmacion, :curso_nombre, :curso)";
+      $stmt = $pdo->prepare($sql);
+      $stmt->bindParam(':alumno_id', $alumno);
+      $stmt->bindParam(':empresa_id', $empresa);
+      $stmt->bindParam(':tutor_id', $tutor);
+      $stmt->bindParam(':instructor_id', $instructor);
+      $stmt->bindParam(':fecha_inicio', $fechaInicio);
+      $stmt->bindParam(':fecha_fin', $fechaFin);
+      $stmt->bindParam(':fecha_confirmacion', $fechaConfirmacion);
+      $stmt->bindParam(':curso_nombre', $cursoNombre);
+      $stmt->bindParam(':curso', $curso);
+      $stmt->execute();
+      echo "<script>alert('Práctica anadida correctamente')</script>";
+    }
+  } catch (PDOException $e) {
+    echo "Error no ha introducido todos los datos correctamente";
+  }
+
+
   ?>
   <form action="empresas.php" method="post">
     <label for="nombre">NOMBRE: </label>
@@ -175,7 +232,7 @@ try {
 
     echo "<table>";
     echo "<tr><th>CIF</th><th>Nombre</th><th>Email</th><th>Dirección</th><th>Localidad</th><th>Provincia</th><th>Teléfono</th><th>Persona de Contacto</th>
-    <th colspan='2'>
+    <th colspan='3'>
     <form method='post' action='empresas.php'>
     <input type='submit' name='insertar_empresa' value='Insertar Empresa'>
     </form>
@@ -191,8 +248,8 @@ try {
         . $row['telefono'] . "</td><td>"
         . $row['persona_contacto'] . "</td>";
 
-            // Botón "Editar"
-            echo "<td><form method='post' action='empresas.php'>
+      // Botón "Editar"
+      echo "<td><form method='post' action='empresas.php'>
             <input type='hidden' name='cif' value='" . $row['cif'] . "'>
             <input type='hidden' name='nombre' value='" . $row['nombre'] . "'>
             <input type='hidden' name='email' value='" . $row['email'] . "'>
@@ -203,92 +260,148 @@ try {
             <input type='hidden' name='persona_contacto' value='" . $row['persona_contacto'] . "'>
             <input type='submit' name='editar' value='Editar'>
             </form></td>";
-      
-            // Botón "Eliminar"
-            echo "<td><form method='post' action='empresas.php'>
+
+      // Botón "Eliminar"
+      echo "<td><form method='post' action='empresas.php'>
                   <input type='hidden' name='cif_d' value='" . $row['cif'] . "'>
                   <input type='submit' name='eliminar_empresa' value='Eliminar'></form></td>";
-            echo "</tr>";
-          }
-          echo "</table>";
-        } catch (PDOException $err) {
-          echo "Error al ejecutar la consulta";
-        }
-      
-        ?>
-        <!--Paginación-->
-        <form action="empresas.php" method="post" id="paginacion">
-          <input type="submit" name="primera_pagina" value="<<" <?php ?>>
-          <input type="submit" name="pagina_anterior" value="<" <?php ?>>
-          <input type="text" name="pagina" value="<?php echo $num_paginas ?>">
-          <input type="submit" name="siguiente_pagina" value=">">
-          <input type="submit" name="ultima_pagina" value=">>" <?php ?>>
-        </form>
-        <?php
-        if (isset($_POST['editar']) && !isset($_POST['cancelar'])) {
-          $cif = $_POST['cif'];
-          $nombre = $_POST['nombre'];
-          $email = $_POST['email'];
-          $direccion = $_POST['direccion'];
-          $localidad = $_POST['localidad'];
-          $provincia = $_POST['provincia'];
-          $telefono = $_POST['telefono'];
-          $persona_contacto = $_POST['persona_contacto'];
-        ?>
-      
-          <!-- Formulario de edición -->
-          <form method='post' action='empresas.php' id='insercion_edicion'>
-            <input type='hidden' name='cif' value='<?php echo $cif; ?>'>
-            <label for='nombre'>Nombre: </label>
-            <input type='text' name='nombre' value='<?php echo $nombre; ?>'><br>
-            <label for='email'>Email: </label>
-            <input type='text' name='email' value='<?php echo $email; ?>'><br>
-            <label for='direccion'>Dirección: </label>
-            <input type='text' name='direccion' value='<?php echo $direccion; ?>'><br>
-            <label for='localidad'>Localidad: </label>
-            <input type='text' name='localidad' value='<?php echo $localidad; ?>'><br>
-            <label for='provincia'>Provincia: </label>
-            <input type='text' name='provincia' value='<?php echo $provincia; ?>'><br>
-            <label for='telefono'>Teléfono: </label>
-            <input type='text' name='telefono' value='<?php echo $telefono; ?>'><br>
-            <label for='persona_contacto'>Persona de Contacto: </label>
-            <input type='text' name='persona_contacto' value='<?php echo $persona_contacto; ?>'><br>
-            <input type='submit' name='guardar_edicion' value='Guardar'>
-            <input type='submit' name='cancelar' value='Cancelar'>
-          </form>
-      
-        <?php
-        }
-      
-        if (isset($_POST['insertar_empresa']) && !isset($_POST['cancelar'])) {
-        ?>
-      
-          <!-- Formulario de inserción -->
-          <form method='post' action='empresas.php' id='insercion_edicion'>
-            <label for='cif'>CIF: </label>
-            <input type='text' name='cif'><br>
-            <label for='nombre'>Nombre: </label>
-            <input type='text' name='nombre'><br>
-            <label for='email'>Email: </label>
-            <input type='text' name='email'><br>
-            <label for='direccion'>Dirección: </label>
-            <input type='text' name='direccion'><br>
-            <label for='localidad'>Localidad: </label>
-            <input type='text' name='localidad'><br>
-            <label for='provincia'>Provincia: </label>
-            <input type='text' name='provincia'><br>
-            <label for='telefono'>Teléfono: </label>
-            <input type='text' name='telefono'><br>
-            <label for='persona_contacto'>Persona de Contacto: </label>
-            <input type='text' name='persona_contacto'><br>
-            <input type='submit' name='insertar' value='Insertar'>
-            <input type='submit' name='cancelar' value='Cancelar'>
-          </form>
-        <?php
-        }
-        ?>
-      
-      </body>
-      
-      </html>
-      
+
+
+      // Boton Añadir FCT
+      echo "<td><form method='post' action='empresas.php'>
+            <input type='hidden' name='nombre' value='" . $row['nombre'] . "'>
+            <input type='submit' name='añadir_fct' value='Añadir FCT'></form></td>";
+
+      echo "</tr>";
+    }
+    echo "</table>";
+  } catch (PDOException $err) {
+    echo "Error al ejecutar la consulta";
+  }
+
+  ?>
+  <!--Paginación-->
+  <form action="empresas.php" method="post" id="paginacion">
+    <input type="submit" name="primera_pagina" value="<<" <?php ?>>
+    <input type="submit" name="pagina_anterior" value="<" <?php ?>>
+    <input type="text" name="pagina" value="<?php echo $num_paginas ?>">
+    <input type="submit" name="siguiente_pagina" value=">">
+    <input type="submit" name="ultima_pagina" value=">>" <?php ?>>
+  </form>
+  <?php
+  if (isset($_POST['editar']) && !isset($_POST['cancelar'])) {
+    $cif = $_POST['cif'];
+    $nombre = $_POST['nombre'];
+    $email = $_POST['email'];
+    $direccion = $_POST['direccion'];
+    $localidad = $_POST['localidad'];
+    $provincia = $_POST['provincia'];
+    $telefono = $_POST['telefono'];
+    $persona_contacto = $_POST['persona_contacto'];
+  ?>
+
+    <!-- Formulario de edición -->
+    <form method='post' action='empresas.php' id='insercion_edicion'>
+      <input type='hidden' name='cif' value='<?php echo $cif; ?>'>
+      <label for='nombre'>Nombre: </label>
+      <input type='text' name='nombre' value='<?php echo $nombre; ?>'>
+      <label for='email'>Email: </label>
+      <input type='text' name='email' value='<?php echo $email; ?>'>
+      <label for='direccion'>Dirección: </label>
+      <input type='text' name='direccion' value='<?php echo $direccion; ?>'>
+      <label for='localidad'>Localidad: </label>
+      <input type='text' name='localidad' value='<?php echo $localidad; ?>'>
+      <label for='provincia'>Provincia: </label>
+      <input type='text' name='provincia' value='<?php echo $provincia; ?>'>
+      <label for='telefono'>Teléfono: </label>
+      <input type='text' name='telefono' value='<?php echo $telefono; ?>'>
+      <label for='persona_contacto'>Persona de Contacto: </label>
+      <input type='text' name='persona_contacto' value='<?php echo $persona_contacto; ?>'>
+      <input type='submit' name='guardar_edicion' value='Guardar'>
+      <input type='submit' name='cancelar' value='Cancelar'>
+    </form>
+
+  <?php
+  }
+
+  if (isset($_POST['insertar_empresa']) && !isset($_POST['cancelar'])) {
+  ?>
+
+    <!-- Formulario de inserción -->
+    <form method='post' action='empresas.php' id='insercion_edicion'>
+      <label for='cif'>CIF: </label>
+      <input type='text' name='cif'>
+      <label for='nombre'>Nombre: </label>
+      <input type='text' name='nombre'>
+      <label for='email'>Email: </label>
+      <input type='text' name='email'>
+      <label for='direccion'>Dirección: </label>
+      <input type='text' name='direccion'>
+      <label for='localidad'>Localidad: </label>
+      <input type='text' name='localidad'>
+      <label for='provincia'>Provincia: </label>
+      <input type='text' name='provincia'>
+      <label for='telefono'>Teléfono: </label>
+      <input type='text' name='telefono'>
+      <label for='persona_contacto'>Persona de Contacto: </label>
+      <input type='text' name='persona_contacto'>
+      <input type='submit' name='insertar' value='Insertar'>
+      <input type='submit' name='cancelar' value='Cancelar'>
+    </form>
+  <?php
+  }
+  ?>
+
+  <?php
+  if (isset($_POST['añadir_fct'])) {
+    $nombre = $_POST['nombre'];
+    echo "Añadir nueva practica en la empresa $nombre: ";
+  ?>
+
+    <!-- Formulario de inserción en la tabla practicas-->
+    <form method='post' action='empresas.php' id='añadir_practica'>
+      <label for='alumno_id'>Email alumno: </label>
+      <input type='alumno_id' name='alumno_id'>
+
+      <input type='hidden' name='empresa_id' value='<?php echo $nombre;?>'>
+
+      <label for='tutor_id'>Email tutor*:</label>
+      <input type='tutor_id' name='tutor_id' required>
+
+      <label for='instructor_id'>Nombre instructor:</label>
+      <input type='instructor_id' name='instructor_id'>
+
+      <label for='fecha_inicio'>Fecha inicio:</label>
+      <input type='text' name='fecha_inicio'>
+
+      <label for='fecha_fin'>Fecha fin:</label>
+      <input type='text' name='fecha_fin'>
+
+      <label for='fecha_confirmacion'>Fecha confirmación:</label>
+      <input type='text' name='fecha_confirmacion'>
+
+      <label for='curso_nombre'>Nombre del curso:</label>
+      <select type='curso_nombre' name='curso_nombre'>
+        <option value="dam">DAM</option>
+        <option value="daw">DAW</option>
+      </select>
+
+      <label for='curso'>Curso:</label>
+      <select type='curso' name='curso'>
+        <option value="1">1</option>
+        <option value="2">2</option>
+      </select>
+
+      <input type='submit' name='insertar_practica' value='Insertar'>
+      <input type='submit' name='cancelar' value='Cancelar'>
+    </form>
+
+
+  <?php
+  }
+  ?>
+
+
+</body>
+
+</html>
