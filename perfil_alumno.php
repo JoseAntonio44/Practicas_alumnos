@@ -87,10 +87,10 @@ if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
     $fct_query = $pdo->prepare($sql_fct);
     $fct_query->execute();
     // Mostrar datos de la FCT
+    echo "<h2>FCT Alumno</h2>";
     if ($fct_data = $fct_query->fetchAll(PDO::FETCH_ASSOC)) {
       echo "<div class='fct-datos'>";
       foreach ($fct_data as $fct_row) {
-        echo "<h2>FCT Alumno</h2>";
         echo "<table>";
         echo "<tr><th>Nombre:</th><td>" . $fct_row['nombre'] . "</td></tr>";
         echo "<tr><th>NIA:</th><td>" . $fct_row['nia'] . "</td></tr>";
