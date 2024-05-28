@@ -68,10 +68,10 @@ try {
             //Total registros
             $total_registros_query = $pdo->query("SELECT count(*) FROM alumno");
             $total_registros = $total_registros_query->fetchColumn(); //Para obtener el resultado de la consulta y poder calcular con él
-
+            
             $registros_pagina = 10;
             //Calculo del número total de páginas
-
+            
             $total_paginas = ceil($total_registros / $registros_pagina);
 
             //Pasar de pagina y retroceder
@@ -183,14 +183,29 @@ try {
         ?>
 
         <!--Paginación-->
+        <div id="pagination-container">
         <form action="inicio_alumnos.php" method="post" id="paginacion">
-            <input type="submit" name="primera_pagina" value="<<" <?php ?>>
-            <input type="submit" name="pagina_anterior" value="<" <?php ?>>
-            <input type="text" name="pagina" value="<?php echo $num_paginas ?>">
-            <input type="submit" name="siguiente_pagina" value=">">
-            <input type="submit" name="ultima_pagina" value=">>" <?php ?>>
+          <input type="submit" name="primera_pagina" value="<<" <?php ?>>
+          <input type="submit" name="pagina_anterior" value="<" <?php ?>>
+          <input type="text" name="pagina" id="pagina_input" value="<?php echo $num_paginas ?>">
+          <input type="submit" name="siguiente_pagina" value=">">
+          <input type="submit" name="ultima_pagina" value=">>" <?php ?>>
         </form>
 
+        <script>
+        const paginaInput = document.getElementById('pagina_input');
+        const paginacionForm = document.getElementById('paginacion');
+
+        paginaInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                paginacionForm.submit();
+            }
+        });
+        </script>
+
+        
+        
         <?php
 
         ?>

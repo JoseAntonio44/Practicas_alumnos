@@ -35,18 +35,18 @@ try {
 <body>
   <?php
 
-    $user = $_SESSION['usuario'];
+  $user = $_SESSION['usuario'];
 
-    $sql = "SELECT nombre FROM tutor WHERE email='$user'";
-    $gsent = $pdo->prepare($sql);
-    $gsent->execute();
+  $sql = "SELECT nombre FROM tutor WHERE email='$user'";
+  $gsent = $pdo->prepare($sql);
+  $gsent->execute();
 
-    $nombreUsu = null;
-    if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
-        $nombreUsu = $row['nombre'];
-    }
+  $nombreUsu = null;
+  if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
+    $nombreUsu = $row['nombre'];
+  }
 
-    ?>
+  ?>
   <header>
     <!-- boton para ir a tutores -->
     <form action="inicio_profesores.php" method="post">
@@ -66,7 +66,7 @@ try {
   </header>
   <?php
   //Procesamiento de formularios
-
+  
   // Editar la empresa
   if (isset($_POST['guardar_edicion'])) {
     $cif = $_POST['cif'];
@@ -188,7 +188,7 @@ try {
     // Total registros
     $total_registros_query = $pdo->query("SELECT count(*) FROM empresa");
     $total_registros = $total_registros_query->fetchColumn(); // Para obtener el resultado de la consulta y poder calcular con él
-
+  
     $registros_pagina = 10;
     // Cálculo del número total de páginas
     $total_paginas = ceil($total_registros / $registros_pagina);
@@ -281,13 +281,30 @@ try {
 
   ?>
   <!--Paginación-->
+  <div id="pagination-container">
   <form action="empresas.php" method="post" id="paginacion">
     <input type="submit" name="primera_pagina" value="<<" <?php ?>>
     <input type="submit" name="pagina_anterior" value="<" <?php ?>>
-    <input type="text" name="pagina" value="<?php echo $num_paginas ?>">
+    <input type="text" name="pagina" id="pagina_input" value="<?php echo $num_paginas ?>">
     <input type="submit" name="siguiente_pagina" value=">">
     <input type="submit" name="ultima_pagina" value=">>" <?php ?>>
   </form>
+
+
+  <script>
+  const paginaInput = document.getElementById('pagina_input');
+  const paginacionForm = document.getElementById('paginacion');
+
+  paginaInput.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      paginacionForm.submit();
+    }
+  });
+  </script>
+
+
+
   <?php
   if (isset($_POST['editar']) && !isset($_POST['cancelar'])) {
     $cif = $_POST['cif'];
@@ -298,57 +315,57 @@ try {
     $provincia = $_POST['provincia'];
     $telefono = $_POST['telefono'];
     $persona_contacto = $_POST['persona_contacto'];
-  ?>
+    ?>
 
-    <!-- Formulario de edición -->
-    <form method='post' action='empresas.php' id='insercion_edicion'>
-      <input type='hidden' name='cif' value='<?php echo $cif; ?>'>
-      <label for='nombre'>Nombre: </label>
-      <input type='text' name='nombre' value='<?php echo $nombre; ?>'>
-      <label for='email'>Email: </label>
-      <input type='text' name='email' value='<?php echo $email; ?>'>
-      <label for='direccion'>Dirección: </label>
-      <input type='text' name='direccion' value='<?php echo $direccion; ?>'>
-      <label for='localidad'>Localidad: </label>
-      <input type='text' name='localidad' value='<?php echo $localidad; ?>'>
-      <label for='provincia'>Provincia: </label>
-      <input type='text' name='provincia' value='<?php echo $provincia; ?>'>
-      <label for='telefono'>Teléfono: </label>
-      <input type='text' name='telefono' value='<?php echo $telefono; ?>'>
-      <label for='persona_contacto'>Persona de Contacto: </label>
-      <input type='text' name='persona_contacto' value='<?php echo $persona_contacto; ?>'>
-      <input type='submit' name='guardar_edicion' value='Guardar'>
-      <input type='submit' name='cancelar' value='Cancelar'>
-    </form>
+            <!-- Formulario de edición -->
+            <form method='post' action='empresas.php' id='insercion_edicion'>
+              <input type='hidden' name='cif' value='<?php echo $cif; ?>'>
+              <label for='nombre'>Nombre: </label>
+              <input type='text' name='nombre' value='<?php echo $nombre; ?>'>
+              <label for='email'>Email: </label>
+              <input type='text' name='email' value='<?php echo $email; ?>'>
+              <label for='direccion'>Dirección: </label>
+              <input type='text' name='direccion' value='<?php echo $direccion; ?>'>
+              <label for='localidad'>Localidad: </label>
+              <input type='text' name='localidad' value='<?php echo $localidad; ?>'>
+              <label for='provincia'>Provincia: </label>
+              <input type='text' name='provincia' value='<?php echo $provincia; ?>'>
+              <label for='telefono'>Teléfono: </label>
+              <input type='text' name='telefono' value='<?php echo $telefono; ?>'>
+              <label for='persona_contacto'>Persona de Contacto: </label>
+              <input type='text' name='persona_contacto' value='<?php echo $persona_contacto; ?>'>
+              <input type='submit' name='guardar_edicion' value='Guardar'>
+              <input type='submit' name='cancelar' value='Cancelar'>
+            </form>
 
-  <?php
+          <?php
   }
 
   if (isset($_POST['insertar_empresa']) && !isset($_POST['cancelar'])) {
-  ?>
+    ?>
 
-    <!-- Formulario de inserción -->
-    <form method='post' action='empresas.php' id='insercion_edicion'>
-      <label for='cif'>CIF: </label>
-      <input type='text' name='cif'>
-      <label for='nombre'>Nombre: </label>
-      <input type='text' name='nombre'>
-      <label for='email'>Email: </label>
-      <input type='text' name='email'>
-      <label for='direccion'>Dirección: </label>
-      <input type='text' name='direccion'>
-      <label for='localidad'>Localidad: </label>
-      <input type='text' name='localidad'>
-      <label for='provincia'>Provincia: </label>
-      <input type='text' name='provincia'>
-      <label for='telefono'>Teléfono: </label>
-      <input type='text' name='telefono'>
-      <label for='persona_contacto'>Persona de Contacto: </label>
-      <input type='text' name='persona_contacto'>
-      <input type='submit' name='insertar' value='Insertar'>
-      <input type='submit' name='cancelar' value='Cancelar'>
-    </form>
-  <?php
+            <!-- Formulario de inserción -->
+            <form method='post' action='empresas.php' id='insercion_edicion'>
+              <label for='cif'>CIF: </label>
+              <input type='text' name='cif'>
+              <label for='nombre'>Nombre: </label>
+              <input type='text' name='nombre'>
+              <label for='email'>Email: </label>
+              <input type='text' name='email'>
+              <label for='direccion'>Dirección: </label>
+              <input type='text' name='direccion'>
+              <label for='localidad'>Localidad: </label>
+              <input type='text' name='localidad'>
+              <label for='provincia'>Provincia: </label>
+              <input type='text' name='provincia'>
+              <label for='telefono'>Teléfono: </label>
+              <input type='text' name='telefono'>
+              <label for='persona_contacto'>Persona de Contacto: </label>
+              <input type='text' name='persona_contacto'>
+              <input type='submit' name='insertar' value='Insertar'>
+              <input type='submit' name='cancelar' value='Cancelar'>
+            </form>
+          <?php
   }
   ?>
 
@@ -356,48 +373,48 @@ try {
   if (isset($_POST['añadir_fct'])) {
     $nombre = $_POST['nombre'];
     echo "Añadir nueva practica en la empresa $nombre: ";
-  ?>
+    ?>
 
-    <!-- Formulario de inserción en la tabla practicas-->
-    <form method='post' action='empresas.php' id='añadir_practica'>
-      <label for='alumno_id'>Email alumno: </label>
-      <input type='alumno_id' name='alumno_id'>
+            <!-- Formulario de inserción en la tabla practicas-->
+            <form method='post' action='empresas.php' id='añadir_practica'>
+              <label for='alumno_id'>Email alumno: </label>
+              <input type='alumno_id' name='alumno_id'>
 
-      <input type='hidden' name='empresa_id' value='<?php echo $nombre;?>'>
+              <input type='hidden' name='empresa_id' value='<?php echo $nombre; ?>'>
 
-      <label for='tutor_id'>Email tutor*:</label>
-      <input type='tutor_id' name='tutor_id' required>
+              <label for='tutor_id'>Email tutor*:</label>
+              <input type='tutor_id' name='tutor_id' required>
 
-      <label for='instructor_id'>Nombre instructor:</label>
-      <input type='instructor_id' name='instructor_id'>
+              <label for='instructor_id'>Nombre instructor:</label>
+              <input type='instructor_id' name='instructor_id'>
 
-      <label for='fecha_inicio'>Fecha inicio:</label>
-      <input type='text' name='fecha_inicio'>
+              <label for='fecha_inicio'>Fecha inicio:</label>
+              <input type='text' name='fecha_inicio'>
 
-      <label for='fecha_fin'>Fecha fin:</label>
-      <input type='text' name='fecha_fin'>
+              <label for='fecha_fin'>Fecha fin:</label>
+              <input type='text' name='fecha_fin'>
 
-      <label for='fecha_confirmacion'>Fecha confirmación:</label>
-      <input type='text' name='fecha_confirmacion'>
+              <label for='fecha_confirmacion'>Fecha confirmación:</label>
+              <input type='text' name='fecha_confirmacion'>
 
-      <label for='curso_nombre'>Nombre del curso:</label>
-      <select type='curso_nombre' name='curso_nombre'>
-        <option value="dam">DAM</option>
-        <option value="daw">DAW</option>
-      </select>
+              <label for='curso_nombre'>Nombre del curso:</label>
+              <select type='curso_nombre' name='curso_nombre'>
+                <option value="dam">DAM</option>
+                <option value="daw">DAW</option>
+              </select>
 
-      <label for='curso'>Curso:</label>
-      <select type='curso' name='curso'>
-        <option value="1">1</option>
-        <option value="2">2</option>
-      </select>
+              <label for='curso'>Curso:</label>
+              <select type='curso' name='curso'>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
 
-      <input type='submit' name='insertar_practica' value='Insertar'>
-      <input type='submit' name='cancelar' value='Cancelar'>
-    </form>
+              <input type='submit' name='insertar_practica' value='Insertar'>
+              <input type='submit' name='cancelar' value='Cancelar'>
+            </form>
 
 
-  <?php
+          <?php
   }
   ?>
 
