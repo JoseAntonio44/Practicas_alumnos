@@ -50,15 +50,25 @@ if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
 
     <header>
         <p>Bienvenido <?php echo $nombreUsu ?>!</p>
-        <form action="inicio_alumnos.php" method="post">
-            <input type="submit" id="boton_logout" name="logout" value="Cerrar Sesión">
-            <?php
-            if (isset($_POST['logout'])) {
-              session_destroy();
-              header('Location: login.php');
-            }
-            ?>
-        </form>
+
+        <article id="botones">
+            <!-- boton para ir a Inicio Alumnos -->
+            <form action="inicio_alumnos.php" method="post">
+                <input type="submit" id="boton_atras" name="Volver" value="Volver a Inicio">
+            </form>
+
+            <!-- boton para cerrar sesion -->
+            <form action="inicio_alumnos.php" method="post">
+                <input type="submit" id="boton_logout" name="logout" value="Cerrar Sesión">
+                <?php
+                if (isset($_POST['logout'])) {
+                    session_destroy();
+                    header('Location: login.php');
+                }
+                ?>
+            </form>
+        </article>
+
     </header>
     <img src="IMG/cuadrao.png" alt="cuadrao" class="cuadrao">
   <?php
