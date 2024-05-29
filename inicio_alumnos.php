@@ -68,7 +68,7 @@ try {
                 ?>
             </form>
         </article>
-        
+
     </header>
 
     <section>
@@ -78,10 +78,10 @@ try {
             //Total registros
             $total_registros_query = $pdo->query("SELECT count(*) FROM alumno");
             $total_registros = $total_registros_query->fetchColumn(); //Para obtener el resultado de la consulta y poder calcular con él
-            
+
             $registros_pagina = 10;
             //Calculo del número total de páginas
-            
+
             $total_paginas = ceil($total_registros / $registros_pagina);
 
             //Pasar de pagina y retroceder
@@ -114,7 +114,8 @@ try {
                     FROM estados_historico eh
                     JOIN practica p ON eh.practica_id = p.id
                     WHERE p.alumno_id = '$user'";
-            //De momento se muestra el estado de la FCT de este alumno pero en un futuro se mostrará del usuario logueado
+ 
+
             $gsent = $pdo->prepare($sql);
             $gsent->execute();
             echo "<table>";
@@ -134,6 +135,7 @@ try {
             FROM comentario c
             JOIN prioridades p ON p.id = c.prioridad_id
             WHERE p.alumno_id = '$user'
+            order by c.fecha desc
             LIMIT 5";
 
 
@@ -161,9 +163,6 @@ try {
             $hablado_por = $_POST['hablado_por'];
             $empresa = $_POST['empresa'];
 
-
-
-
             $sql = "INSERT INTO comentario (comentario, hablado_con, hablado_por, fecha, prioridad_id) 
             SELECT :comentario, :hablado_con, :hablado_por, NOW(), id
             FROM prioridades
@@ -176,6 +175,7 @@ try {
             $gsent->bindParam(':empresa', $empresa);
             $gsent->bindParam(':alumno', $user);
             $gsent->execute();
+            echo "<script>alert('El comentario se ha enviado correctamente');</script>";
         }
         ?>
         <?php
@@ -223,31 +223,31 @@ try {
         ?>
         <!--Paginación-->
         <div id="pagination-container">
-        <form action="inicio_alumnos.php" method="post" id="paginacion">
-          <input type="submit" name="primera_pagina" value="<<" <?php ?>>
-          <input type="submit" name="pagina_anterior" value="<" <?php ?>>
-          <input type="text" name="pagina" id="pagina_input" value="<?php echo $num_paginas ?>">
-          <input type="submit" name="siguiente_pagina" value=">">
-          <input type="submit" name="ultima_pagina" value=">>" <?php ?>>
-        </form>
+            <form action="inicio_alumnos.php" method="post" id="paginacion">
+                <input type="submit" name="primera_pagina" value="<<" <?php ?>>
+                <input type="submit" name="pagina_anterior" value="<" <?php ?>>
+                <input type="text" name="pagina" id="pagina_input" value="<?php echo $num_paginas ?>">
+                <input type="submit" name="siguiente_pagina" value=">">
+                <input type="submit" name="ultima_pagina" value=">>" <?php ?>>
+            </form>
 
-        <script>
-        const paginaInput = document.getElementById('pagina_input');
-        const paginacionForm = document.getElementById('paginacion');
+            <script>
+                const paginaInput = document.getElementById('pagina_input');
+                const paginacionForm = document.getElementById('paginacion');
 
-        paginaInput.addEventListener('keypress', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                paginacionForm.submit();
-            }
-        });
-        </script>
+                paginaInput.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        paginacionForm.submit();
+                    }
+                });
+            </script>
 
-        
-        
-        <?php
 
-        ?>
+
+            <?php
+
+            ?>
     </section>
 
     <?php
