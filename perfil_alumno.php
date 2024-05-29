@@ -1,5 +1,4 @@
 <?php
-//TODO: Corregir que se quedan varios 'radios' seleccionados.
 $num_paginas = intval($_POST['pagina'] ?? 1);
 require_once 'validar_sesion.php';
 
@@ -73,9 +72,9 @@ if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
 
 
 
-  //Mostrar datos de la empresa asignada (si existe)
+  //Mostrar datos de la empresa asignada
   if ($empresa_asignada = true) {
-    //Consulta para obtener los datos de la FCT (adaptar según la estructura de la tabla FCT Alumno)
+    //Consulta para obtener los datos de la FCT 
     $sql_fct = "SELECT a.nombre, a.nia, a.telefono, a.email, e.nombre as nombre_empresa, i.nombre as nombre_instructor, eh.estado_id as estado_FCT
                 FROM practica p
                 JOIN alumno a ON p.alumno_id=a.email
@@ -86,6 +85,7 @@ if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
                 GROUP BY p.id";
     $fct_query = $pdo->prepare($sql_fct);
     $fct_query->execute();
+    
     // Mostrar datos de la FCT
     echo "<h2>FCT Alumno</h2>";
     if ($fct_data = $fct_query->fetchAll(PDO::FETCH_ASSOC)) {
@@ -112,7 +112,7 @@ if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
 
 
 
-  //Consulta para obtener los mensajes del alumno (adaptar según la estructura de la tabla Mensajes)
+  //Consulta para obtener los mensajes del alumno
   $sql_mensajes = "SELECT c.fecha, c.comentario, c.hablado_con, c.hablado_por, c.prioridad_id
                   FROM comentario c
                   JOIN prioridades p ON c.prioridad_id=p.id
@@ -124,31 +124,28 @@ if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
   echo "<h2>Mensajes</h2>";
   if ($mensajes = $mensajes_query->fetchAll(PDO::FETCH_ASSOC)) {
     echo "<table>";
-    echo "<tr><th>Fecha</th><th>Asunto</th><th>Hablado con</th><th>Hablado por</th><th>Prioridad</th></tr>";
+    echo "<tr>
+          <th>Fecha</th>
+          <th>Asunto</th>
+          <th>Hablado con</th>
+          <th>Hablado por</th>
+          <th>Prioridad</th>
+          </tr>";
     foreach ($mensajes as $mensaje) {
-      echo "<tr><td>" . $mensaje['fecha'] . "</td><td>" . $mensaje['comentario'] . "</td><td>" . $mensaje['hablado_con'] . "</td><td>" . $mensaje['hablado_por'] . "</td><td>" . getPrioridadNombre($mensaje['prioridad_id']) . "</td></tr>";
+      echo "<tr>
+            <td>" . $mensaje['fecha'] . "</td>
+            <td>" . $mensaje['comentario'] . "</td>
+            <td>" . $mensaje['hablado_con'] . "</td>
+            <td>" . $mensaje['hablado_por'] . "</td>
+            <td>" . getPrioridadNombre($mensaje['prioridad_id']) . "</td>
+            </tr>";
     }
     echo "</table>";
   } else {
     echo "<p>No se encontraron mensajes para este alumno.</p>";
   }
 
-  // Función para obtener el nombre del estado a partir del ID
-  function getEstadoNombre($estado_id)
-  {
-    switch ($estado_id) {
-      case 1:
-        return "En curso";
-      case 2:
-        return "Finalizado";
-      case 3:
-        return "Cancelado";
-      default:
-        return "Sin asignar";
-    }
-  }
-
-  // Función para obtener el nombre de la prioridad a partir del ID
+  // Función para obtener el nombre de la prioridad
   function getPrioridadNombre($prioridad_id)
   {
     switch ($prioridad_id) {
