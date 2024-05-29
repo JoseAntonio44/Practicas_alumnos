@@ -109,18 +109,22 @@ try {
             $registros = ($num_paginas - 1) * $registros_pagina;
 
 
-
             //Tabla para mostrar el estado de la FCT
-            $sql = "SELECT comentario, fecha, estado_id 
-                    FROM estados_historico 
-                    WHERE practica_id IN (SELECT id FROM practica WHERE alumno_id = '$user')";
+            $sql = "SELECT p.empresa_id, eh.comentario, eh.fecha, eh.estado_id
+                    FROM estados_historico eh
+                    JOIN practica p ON eh.practica_id = p.id
+                    WHERE p.alumno_id = '$user'";
             //De momento se muestra el estado de la FCT de este alumno pero en un futuro se mostrará del usuario logueado
             $gsent = $pdo->prepare($sql);
             $gsent->execute();
             echo "<table>";
-            echo "<tr><th id=\"alumno\" rowspan=\"2\"> <img src=\"IMG/alumno_icono.png\" alt=\"img\"> <h1>alumno</h1> <h1>estado FCT</h1></th><th>Estado</th><th>Comentario</th><th>Fecha</th></tr>";
+            echo "<tr><th id=\"alumno\" rowspan=\"2\"> <img src=\"IMG/alumno_icono.png\" alt=\"img\"> <h1>alumno</h1> <h1>estado FCT</h1></th><th>Empresa</th><th>Estado</th><th>Comentario</th><th>Fecha</th></tr>";
             while ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
-                echo "<tr><td>" . $row['estado_id'] . "</td><td>" . $row['comentario'] . "</td><td>" . $row['fecha'] . "</td>";
+                echo "<tr><td>" 
+                . $row['empresa_id'] . "</td><td>"
+                . $row['estado_id'] . "</td><td>" 
+                . $row['comentario'] . "</td><td>" 
+                . $row['fecha'] . "</td>";
             }
             echo "</table>";
 
@@ -129,7 +133,8 @@ try {
             $sql = "SELECT p.empresa_id, c.comentario, c.hablado_con, c.hablado_por, c.fecha
             FROM comentario c
             JOIN prioridades p ON p.id = c.prioridad_id
-            WHERE p.alumno_id = '$user'";
+            WHERE p.alumno_id = '$user'
+            LIMIT 5";
 
 
             $gsent = $pdo->prepare($sql);
@@ -191,7 +196,6 @@ try {
         echo "</table>";
 
         ?>
-
         <!--Paginación-->
         <div id="pagination-container">
         <form action="inicio_alumnos.php" method="post" id="paginacion">
@@ -220,6 +224,33 @@ try {
 
         ?>
     </section>
+
+    <?php
+    //Tabla para mostrar las empresas y que el alumno elija la que quiera
+    $sql = "SELECT nombre, cif, email, CONCAT_WS(', ', direccion, localidad, provincia) AS direccion, telefono, persona_contacto 
+    FROM empresa 
+    WHERE nombre IN (SELECT empresa_id FROM prioridades WHERE alumno_id = '$user')
+    ORDER BY cif";
+
+    $gsent = $pdo->prepare($sql);
+    $gsent->execute();
+
+    echo "<table>";
+
+    echo "<tr><th id='encabezado_tabla' colspan='7'>Empresas en sus prioridades</th></tr>";
+    echo "</th><th>Nombre</th><th>CIF</th><th>Email</th><th>Direccion</th><th>Telefono</th><th>Persona de contacto</th></tr>";
+    while ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
+        echo "<tr><td>"
+            . $row['nombre'] . "</td><td>"
+            . $row['cif'] . "</td><td>"
+            . $row['email'] . "</td><td>"
+            . $row['direccion'] . "</td><td>"
+            . $row['telefono'] . "</td><td>"
+            . $row['persona_contacto'] . "</td>";
+    }
+    echo "</table>";
+
+    ?>
 
 
 
