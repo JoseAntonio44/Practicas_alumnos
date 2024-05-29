@@ -120,11 +120,11 @@ try {
             echo "<table>";
             echo "<tr><th id=\"alumno\" rowspan=\"2\"> <img src=\"IMG/alumno_icono.png\" alt=\"img\"> <h1>alumno</h1> <h1>estado FCT</h1></th><th>Empresa</th><th>Estado</th><th>Comentario</th><th>Fecha</th></tr>";
             while ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
-                echo "<tr><td>" 
-                . $row['empresa_id'] . "</td><td>"
-                . $row['estado_id'] . "</td><td>" 
-                . $row['comentario'] . "</td><td>" 
-                . $row['fecha'] . "</td>";
+                echo "<tr><td>"
+                    . $row['empresa_id'] . "</td><td>"
+                    . $row['estado_id'] . "</td><td>"
+                    . $row['comentario'] . "</td><td>"
+                    . $row['fecha'] . "</td>";
             }
             echo "</table>";
 
@@ -151,18 +151,43 @@ try {
                     . $row['fecha'] . "</td>";
             }
             echo "</table>";
-
             ?>
         </div>
+        <?php
+        //Añade un comentario del alumno con la empresa
+        if (isset($_POST['enviarMensaje'])) {
+            $comentario = $_POST['comentario'];
+            $hablado_con = $_POST['hablado_con'];
+            $hablado_por = $_POST['hablado_por'];
+            $empresa = $_POST['empresa'];
 
+
+
+
+            $sql = "INSERT INTO comentario (comentario, hablado_con, hablado_por, fecha, prioridad_id) 
+            SELECT :comentario, :hablado_con, :hablado_por, NOW(), id
+            FROM prioridades
+            WHERE  :alumno = '$user' AND empresa_id = :empresa";
+
+            $gsent = $pdo->prepare($sql);
+            $gsent->bindParam(':comentario', $comentario);
+            $gsent->bindParam(':hablado_con', $hablado_con);
+            $gsent->bindParam(':hablado_por', $hablado_por);
+            $gsent->bindParam(':empresa', $empresa);
+            $gsent->bindParam(':alumno', $user);
+            $gsent->execute();
+        }
+        ?>
         <?php
         $nombre = $_POST['empresa'] ?? null;
         //Añade la empresa a la tabla de prioridades
-        if ($nombre != null) {
-            $sql = "INSERT INTO prioridades (alumno_id, empresa_id) VALUES ('$user', '$nombre')";
-            $gsent = $pdo->prepare($sql);
-            $gsent->execute();
-            echo "<script>alert('La empresa $nombre se ha añadido correctamente a sus prioridades');</script>";
+        if (isset($_POST['seleccionarEmpresa'])) {
+            if ($nombre != null) {
+                $sql = "INSERT INTO prioridades (alumno_id, empresa_id) VALUES ('$user', '$nombre')";
+                $gsent = $pdo->prepare($sql);
+                $gsent->execute();
+                echo "<script>alert('La empresa $nombre se ha añadido correctamente a sus prioridades');</script>";
+            }
         }
 
         //Tabla para mostrar las empresas y que el alumno elija la que quiera
@@ -184,7 +209,7 @@ try {
                 //Con la casilla selecciona el alumno la empresa para ponerlo en sus prioridades
                 . "<form action='inicio_alumnos.php' method='post'> 
                 <input type='hidden' name='empresa' value='" . $row['nombre'] . "'>
-                <input type='submit' value='Seleccionar'>
+                <input type='submit' name='seleccionarEmpresa' value='Seleccionar'>
                 </form></td><td>"
                 . $row['nombre'] . "</td><td>"
                 . $row['cif'] . "</td><td>"
@@ -238,9 +263,14 @@ try {
     echo "<table>";
 
     echo "<tr><th id='encabezado_tabla' colspan='7'>Empresas en sus prioridades</th></tr>";
-    echo "</th><th>Nombre</th><th>CIF</th><th>Email</th><th>Direccion</th><th>Telefono</th><th>Persona de contacto</th></tr>";
+    echo "<tr><th></th><th>Nombre</th><th>CIF</th><th>Email</th><th>Direccion</th><th>Telefono</th><th>Persona de contacto</th></tr>";
     while ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
         echo "<tr><td>"
+            //Con la casilla selecciona el alumno la empresa para ponerlo en sus prioridades
+            . "<form action='inicio_alumnos.php' method='post'> 
+        <input type='hidden' name='empresa' value='" . $row['nombre'] . "'>
+        <input type='submit' name='seleccionarEmpresaMensaje' value='Enviar mensaje'>
+        </form></td><td>"
             . $row['nombre'] . "</td><td>"
             . $row['cif'] . "</td><td>"
             . $row['email'] . "</td><td>"
@@ -250,6 +280,30 @@ try {
     }
     echo "</table>";
 
+    if (isset($_POST['seleccionarEmpresaMensaje'])) {
+        $empresa = $_POST['empresa'];
+    ?>
+
+
+        <form method="post" action="inicio_alumnos.php" id="enviarMensajeFormulario">
+
+            <input type="hidden" name="empresa" value="<?php echo $empresa ?>">
+            <label for="comentario"> Comentario:</label>
+            <input type="text" name="comentario">
+            <label for="hablado_con"> Hablar con:</label>
+            <input type="text" name="hablado_con">
+            <label for="hablado_por"> Hablar por:</label>
+            <select name="hablado_por">
+                <option value="mail">mail</option>
+                <option value="presencial">presencial</option>
+                <option value="telefono">telefono</option>
+            </select>
+
+            <input type="submit" name="enviarMensaje" value="Enviar mensaje">
+        </form>
+
+    <?php
+    }
     ?>
 
 
