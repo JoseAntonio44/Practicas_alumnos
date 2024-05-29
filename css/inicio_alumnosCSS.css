@@ -2,14 +2,14 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0px;
+    margin: 0;
 }
 
-div{
+div {
     display: flex;
     flex-direction: column;
-    align-items: left;
-    margin: 0px;
+    align-items: flex-start;
+    margin: 0;
     width: 100%;
 }
 
@@ -17,18 +17,18 @@ section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0px;
-    width: 1200px;
+    margin: 0;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
 }
 
 table {
-    display: flex;
     width: 100%;
-    margin: 10px;
-
+    margin: 10px 0;
 }
 
-td {
+th, td {
     border: 1px solid black;
     text-align: left;
     padding: 8px;
@@ -38,23 +38,22 @@ td {
     background-color: #1C4040;
     color: white;
     text-align: center;
-
 }
 
 #alumno {
     background-color: #20639B;
     color: white;
     text-align: center;
-    width: 190px;
-    height: 80px;
-
+    width: 150px;
+    height: 60px; 
+    font-size: 16px; 
+    padding: 10px; 
 }
 
-h1{
+h1 {
     font-size: 20px;
-    margin: 0px;
+    margin: 0;
 }
-
 
 th {
     background-color: #1C4040;
@@ -63,12 +62,10 @@ th {
     padding: 8px;
 }
 
-#boton_logout {
+#boton_logout, #boton_perfil {
     border-radius: 10px;
-}
-
-#boton_perfil {
-    border-radius: 10px;
+    cursor: pointer;
+    padding: 5px 10px;
 }
 
 header {
@@ -76,27 +73,45 @@ header {
     display: flex;
     background-color: #1C4040;
     color: white;
-    height: 100px;
+    height: auto;
     justify-content: space-between;
     align-items: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
 }
 
-header p{
-    font-size: 40px;
-    margin-left: 20px;
+header p {
+    font-size: 24px;
+    margin: 0;
 }
 
-form{
+form {
     display: flex;
     justify-content: center;
     height: 30px;
 }
 
-
-#botones{
+#botones {
     display: flex;
     justify-content: space-between;
     margin: 10px;
+    
 }
 
+#pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
 
+#paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#pagina_input {
+    width: 30px;
+    text-align: center;
+}

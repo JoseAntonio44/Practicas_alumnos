@@ -114,12 +114,12 @@ try {
                     FROM estados_historico eh
                     JOIN practica p ON eh.practica_id = p.id
                     WHERE p.alumno_id = '$user'";
- 
+
 
             $gsent = $pdo->prepare($sql);
             $gsent->execute();
             echo "<table>";
-            echo "<tr><th id=\"alumno\" rowspan=\"2\"> <img src=\"IMG/alumno_icono.png\" alt=\"img\"> <h1>alumno</h1> <h1>estado FCT</h1></th><th>Empresa</th><th>Estado</th><th>Comentario</th><th>Fecha</th></tr>";
+            echo "<tr><th id=alumno rowspan=2> <img src= IMG/alumno_icono.png alt=img> <h1>alumno</h1> <h1>estado FCT</h1></th><th>Empresa</th><th>Estado</th><th>Comentario</th><th>Fecha</th></tr>";
             while ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
                 echo "<tr><td>"
                     . $row['empresa_id'] . "</td><td>"
@@ -243,70 +243,66 @@ try {
                 });
             </script>
 
+        </div>
 
 
-            <?php
-
-            ?>
-    </section>
-
-    <?php
-    //Tabla para mostrar las empresas y que el alumno elija la que quiera
-    $sql = "SELECT nombre, cif, email, CONCAT_WS(', ', direccion, localidad, provincia) AS direccion, telefono, persona_contacto 
+        <?php
+        //Tabla para mostrar las empresas y que el alumno elija la que quiera
+        $sql = "SELECT nombre, cif, email, CONCAT_WS(', ', direccion, localidad, provincia) AS direccion, telefono, persona_contacto 
     FROM empresa 
     WHERE nombre IN (SELECT empresa_id FROM prioridades WHERE alumno_id = '$user')
     ORDER BY cif";
 
-    $gsent = $pdo->prepare($sql);
-    $gsent->execute();
+        $gsent = $pdo->prepare($sql);
+        $gsent->execute();
 
-    echo "<table>";
+        echo "<table>";
 
-    echo "<tr><th id='encabezado_tabla' colspan='7'>Empresas en sus prioridades</th></tr>";
-    echo "<tr><th></th><th>Nombre</th><th>CIF</th><th>Email</th><th>Direccion</th><th>Telefono</th><th>Persona de contacto</th></tr>";
-    while ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
-        echo "<tr><td>"
-            //Con la casilla selecciona el alumno la empresa para ponerlo en sus prioridades
-            . "<form action='inicio_alumnos.php' method='post'> 
-        <input type='hidden' name='empresa' value='" . $row['nombre'] . "'>
-        <input type='submit' name='seleccionarEmpresaMensaje' value='Enviar mensaje'>
-        </form></td><td>"
-            . $row['nombre'] . "</td><td>"
-            . $row['cif'] . "</td><td>"
-            . $row['email'] . "</td><td>"
-            . $row['direccion'] . "</td><td>"
-            . $row['telefono'] . "</td><td>"
-            . $row['persona_contacto'] . "</td>";
-    }
-    echo "</table>";
+        echo "<tr><th id='encabezado_tabla' colspan='7'>Empresas en sus prioridades</th></tr>";
+        echo "<tr><th></th><th>Nombre</th><th>CIF</th><th>Email</th><th>Direccion</th><th>Telefono</th><th>Persona de contacto</th></tr>";
+        while ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
+            echo "<tr><td>"
+                //Con la casilla selecciona el alumno la empresa para ponerlo en sus prioridades
+                . "<form action='inicio_alumnos.php' method='post'> 
+                        <input type='hidden' name='empresa' value='" . $row['nombre'] . "'>
+                        <input type='submit' name='seleccionarEmpresaMensaje' value='Enviar mensaje'>
+                        </form></td><td>"
+                . $row['nombre'] . "</td><td>"
+                . $row['cif'] . "</td><td>"
+                . $row['email'] . "</td><td>"
+                . $row['direccion'] . "</td><td>"
+                . $row['telefono'] . "</td><td>"
+                . $row['persona_contacto'] . "</td>";
+        }
+        echo "</table>";
 
-    if (isset($_POST['seleccionarEmpresaMensaje'])) {
-        $empresa = $_POST['empresa'];
-    ?>
+        if (isset($_POST['seleccionarEmpresaMensaje'])&&!isset($_POST['cancelar'])) {
+            $empresa = $_POST['empresa'];
+        ?>
 
+            <form method="post" action="inicio_alumnos.php" id="enviarMensajeFormulario">
 
-        <form method="post" action="inicio_alumnos.php" id="enviarMensajeFormulario">
+                <input type="hidden" name="empresa" value="<?php echo $empresa ?>">
+                <label for="comentario"> Comentario:</label>
+                <input type="text" name="comentario">
+                <label for="hablado_con"> Hablar con:</label>
+                <input type="text" name="hablado_con">
+                <label for="hablado_por"> Hablar por:</label>
+                <select name="hablado_por">
+                    <option value="mail">mail</option>
+                    <option value="presencial">presencial</option>
+                    <option value="telefono">telefono</option>
+                </select>
 
-            <input type="hidden" name="empresa" value="<?php echo $empresa ?>">
-            <label for="comentario"> Comentario:</label>
-            <input type="text" name="comentario">
-            <label for="hablado_con"> Hablar con:</label>
-            <input type="text" name="hablado_con">
-            <label for="hablado_por"> Hablar por:</label>
-            <select name="hablado_por">
-                <option value="mail">mail</option>
-                <option value="presencial">presencial</option>
-                <option value="telefono">telefono</option>
-            </select>
+                <input type="submit" name="enviarMensaje" value="Enviar mensaje">
+                <input type="submit" name="cancelar" value="Cancelar">
+            </form>
 
-            <input type="submit" name="enviarMensaje" value="Enviar mensaje">
-        </form>
+        <?php
+        }
+        ?>
 
-    <?php
-    }
-    ?>
-
-
+    </section>
 
 
 
