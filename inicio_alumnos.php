@@ -50,15 +50,25 @@ try {
 
     <header>
         <p>Bienvenido <?php echo $nombreUsu ?>!</p>
-        <form action="inicio_alumnos.php" method="post">
-            <input type="submit" id="boton_logout" name="logout" value="Cerrar Sesión">
-            <?php
-            if (isset($_POST['logout'])) {
-                session_destroy();
-                header('Location: login.php');
-            }
-            ?>
-        </form>
+
+        <article id="botones">
+            <!-- boton para ir a Perfil alumno -->
+            <form action="perfil_alumno.php" method="post">
+                <input type="submit" id="boton_perfil" name="perfil" value="Ir al perfil">
+            </form>
+
+            <!-- boton para cerrar sesion -->
+            <form action="inicio_alumnos.php" method="post">
+                <input type="submit" id="boton_logout" name="logout" value="Cerrar Sesión">
+                <?php
+                if (isset($_POST['logout'])) {
+                    session_destroy();
+                    header('Location: login.php');
+                }
+                ?>
+            </form>
+        </article>
+        
     </header>
 
     <section>
