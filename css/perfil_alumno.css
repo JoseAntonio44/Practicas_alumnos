@@ -9,6 +9,12 @@ body {
     border-radius: 10px;
 }
 
+form{
+    display: flex;
+    justify-content: center;
+    height: 30px;
+}
+
 header {
     width: 100%;
     display: flex;
