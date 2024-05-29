@@ -9,6 +9,10 @@ body {
     border-radius: 10px;
 }
 
+#boton_atras {
+    border-radius: 10px;
+}
+
 form{
     display: flex;
     justify-content: center;
@@ -18,7 +22,6 @@ form{
 header {
     width: 100%;
     display: flex;
-    justify-content: center;
     background-color: #1C4040;
     color: white;
     height: 100px;
@@ -26,7 +29,7 @@ header {
     align-items: center;
 }
 
-header p {
+header p{
     font-size: 40px;
     margin-left: 20px;
 }
@@ -87,3 +90,10 @@ h2 {
 .mensaje:last-child {
     border-bottom: none;
 }
+
+#botones{
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+}
+
