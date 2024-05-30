@@ -231,11 +231,19 @@ try {
     $registros = ($num_paginas - 1) * $registros_pagina;
 
     // Ejecución de la consulta para mostrar la tabla
-    $sql = "SELECT cif, nombre, email, direccion, localidad, provincia, telefono, persona_contacto FROM empresa WHERE true ORDER BY cif LIMIT $registros, 10";
+    $sql = "SELECT cif, nombre, email, direccion, localidad, provincia, telefono, persona_contacto 
+            FROM empresa 
+            WHERE true 
+            ORDER BY cif 
+            LIMIT $registros, 10";
 
     // Procesamiento de formulario de búsqueda
     if (isset($_POST["nombre_B"])) {
-      $sql = "SELECT cif, nombre, email, direccion, localidad, provincia, telefono, persona_contacto FROM empresa WHERE true AND nombre LIKE :nombre ORDER BY cif LIMIT $registros, 10";
+      $sql = "SELECT cif, nombre, email, direccion, localidad, provincia, telefono, persona_contacto 
+              FROM empresa 
+              WHERE true AND nombre LIKE :nombre 
+              ORDER BY cif 
+              LIMIT $registros, 10";
     }
     $gsent = $pdo->prepare($sql);
     if (isset($_POST["nombre_B"])) {
