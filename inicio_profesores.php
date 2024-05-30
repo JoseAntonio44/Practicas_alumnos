@@ -88,7 +88,7 @@ try {
     $stmt->bindParam(':telefono', $telefono);
     $stmt->bindParam(':email', $email);
     $stmt->execute();
-    echo "Alumno actualizado correctamente.";
+    echo "<script>alert('Alumno $nombre actualizado correctamente')</script>";
   }
 
   //Añadir alumno
@@ -131,7 +131,7 @@ try {
       echo "Alumno con NIA $nia_d eliminado correctamente.";
     }
   } catch (PDOException $e) {
-    echo "ERROR AL ELIMINAR AL ALUMNO";
+    echo "<script>alert('ERROR AL ELIMINAR AL ALUMNO, REVISE SI HAY UNA PRACTICA EN CURSO')</script>";
   }
 
 
