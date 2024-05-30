@@ -131,15 +131,24 @@ try {
     if (isset($_POST["eliminar_empresa"])) {
       $cif_d = $_POST['cif_d'] ?? null;
 
-      $sql = "DELETE FROM empresa WHERE cif = :cif";
+      //Elimina a los instructores de la empresa seleccionada
+      $sql = "DELETE FROM instructor WHERE empresa_id in(select nombre from empresa where cif = :cif)";
       $stmt = $pdo->prepare($sql);
       $stmt->bindParam(':cif', $cif_d);
       $stmt->execute();
 
-      echo "Empresa con CIF $cif_d eliminada correctamente.";
+      //Elimina a la empresa seleccionada
+      $sql = "DELETE FROM empresa WHERE cif = :cif";
+      $stmt = $pdo->prepare($sql);
+      $stmt->bindParam(':cif', $cif_d);
+      $stmt->execute();
+    
+      echo "<script>alert('EMPRESA ELIMINADA CORRECTAMENTE')</script>";
     }
   } catch (PDOException $e) {
-    echo $e->getMessage();
+
+    // si la empresa tiene practicas activas no se podra eliminar
+    echo"<script>alert('ERROR: la empresa puede tener practicas activas')</script>;";
   }
 
   // Añadir practica
