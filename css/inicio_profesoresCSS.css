@@ -1,29 +1,154 @@
-body{
+body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0px;
+    margin: 0;
 }
-table {
+
+div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 0;
     width: 100%;
 }
-th, td {
+
+section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+}
+
+table {
+    width: 100%;
+    margin: 10px 0;
+}
+
+th,td {
     border: 1px solid black;
     text-align: left;
     padding: 8px;
 }
+
+#encabezado_tabla {
+    background-color: #1C4040;
+    color: white;
+    text-align: center;
+}
+
+#alumno {
+    background-color: #20639B;
+    color: white;
+    text-align: center;
+    width: 150px;
+    height: 60px;
+    font-size: 16px;
+    padding: 10px;
+}
+
+h1 {
+    font-size: 20px;
+    margin: 0;
+}
+
+th {
+    background-color: #1C4040;
+    color: white;
+    text-align: left;
+    padding: 8px;
+}
+
+#boton_logout,
+#boton_perfil {
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+header {
+    width: 100%;
+    display: flex;
+    background-color: #1C4040;
+    color: white;
+    height: auto;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    box-sizing: border-box;
+}
+
+header p {
+    font-size: 24px;
+    margin: 0;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    height: 30px;
+}
+
+
+#contenedorPaginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
 #paginacion {
     display: flex;
     justify-content: center;
-    flex-direction: row;
-    margin-bottom: 15px;
-    
+    align-items: center;
 }
 
-#insercion_edicion{
+#pagina_input {
+    width: 30px;
+    text-align: center;
+}
+
+#buscadorContenedor {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+label {
+    margin-right: 10px;
+    margin-left: 5px;
+}
+#insercion_edicion {
+    margin-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: #1C4040 2px solid;
+    border-radius: 5px;
+}
+h1 {
+    color: white;
+    background-color: #1C4040;
+    padding: 10px;
+    margin-top: 10px;
+}
+#insercion_edicion input{
+    margin: 5px;
+}
+header div{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
-    margin: 0px;
-    max-width: 400px;
+    align-items: center;
+    width: fit-content;
+}
+input{
+    cursor: pointer;
+}
+header div input{
+    margin: 0 10px;
+}
+#paginacion input{
+    margin: 0 2.5px;
 }

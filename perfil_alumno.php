@@ -33,44 +33,44 @@ try {
 <body>
 
 
-<?php
+  <?php
 
-$user = $_SESSION['usuario'];
+  $user = $_SESSION['usuario'];
 
-$sql = "SELECT nombre FROM alumno WHERE email='$user'";
-$gsent = $pdo->prepare($sql);
-$gsent->execute();
+  $sql = "SELECT nombre FROM alumno WHERE email='$user'";
+  $gsent = $pdo->prepare($sql);
+  $gsent->execute();
 
-$nombreUsu = null;
-if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
-  $nombreUsu = $row['nombre'];
-}
+  $nombreUsu = null;
+  if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
+    $nombreUsu = $row['nombre'];
+  }
 
-?>
+  ?>
 
-    <header>
-        <p>Bienvenido <?php echo $nombreUsu ?>!</p>
+  <header>
+    <p><?php echo $nombreUsu ?></p>
 
-        <article id="botones">
-            <!-- boton para ir a Inicio Alumnos -->
-            <form action="inicio_alumnos.php" method="post">
-                <input type="submit" id="boton_atras" name="Volver" value="Volver a Inicio">
-            </form>
+    <article id="botones">
+      <!-- boton para ir a Inicio Alumnos -->
+      <form action="inicio_alumnos.php" method="post">
+        <input type="submit" id="boton_atras" name="Volver" value="Volver a Inicio">
+      </form>
 
-            <!-- boton para cerrar sesion -->
-            <form action="inicio_alumnos.php" method="post">
-                <input type="submit" id="boton_logout" name="logout" value="Cerrar Sesión">
-                <?php
-                if (isset($_POST['logout'])) {
-                    session_destroy();
-                    header('Location: login.php');
-                }
-                ?>
-            </form>
-        </article>
+      <!-- boton para cerrar sesion -->
+      <form action="inicio_alumnos.php" method="post">
+        <input type="submit" id="boton_logout" name="logout" value="Cerrar Sesión">
+        <?php
+        if (isset($_POST['logout'])) {
+          session_destroy();
+          header('Location: login.php');
+        }
+        ?>
+      </form>
+    </article>
 
-    </header>
-    <img src="IMG/cuadrao.png" alt="cuadrao" class="cuadrao">
+  </header>
+  <img src="IMG/cuadrao.png" alt="cuadrao" class="cuadrao">
   <?php
 
   //Consulta para comprobar si un alumno tiene una empresa asingada
@@ -95,7 +95,7 @@ if ($row = $gsent->fetch(PDO::FETCH_ASSOC)) {
                 GROUP BY p.id";
     $fct_query = $pdo->prepare($sql_fct);
     $fct_query->execute();
-    
+
     // Mostrar datos de la FCT
     echo "<h2>FCT Alumno</h2>";
     if ($fct_data = $fct_query->fetchAll(PDO::FETCH_ASSOC)) {

@@ -53,19 +53,21 @@ try {
   ?>
   <header>
     <p>Bienvenido <?php echo $nombreUsu ?></p>
-    <form action="inicio_alumnos.php" method="post">
-      <input type="submit" name="logout" value="Cerrar Sesión">
-      <?php
-      if (isset($_POST['logout'])) {
-        session_destroy();
-        header('Location: login.php');
-      }
-      ?>
-    </form>
-    <!-- boton para ir a empresas -->
-    <form action="empresas.php" method="post">
-      <input type="submit" name="empresas" value="Empresas">
-    </form>
+    <div>
+      <form action="inicio_alumnos.php" method="post">
+        <input type="submit" name="logout" value="Cerrar Sesión">
+        <?php
+        if (isset($_POST['logout'])) {
+          session_destroy();
+          header('Location: login.php');
+        }
+        ?>
+      </form>
+      <!-- boton para ir a empresas -->
+      <form action="empresas.php" method="post">
+        <input type="submit" name="empresas" value="Empresas">
+      </form>
+    </div>
   </header>
   <?php
   //Procesamiento de formularios
@@ -134,12 +136,14 @@ try {
 
 
   ?>
-  <form action="inicio_profesores.php" method="post">
-    <label for="nombre">NOMBRE: </label>
-    <input type="text" name="nombre_B" id="nombre" value="<?php echo $nombre_B ?>">
-    <input type="submit" value="Buscar">
-    <input type="reset" value="Reset">
-  </form>
+  <div id="buscadorContenedor">
+    <form action="inicio_profesores.php" method="post" id="buscador">
+      <label for="nombre">NOMBRE: </label>
+      <input type="text" name="nombre_B" id="nombre" value="<?php echo $nombre_B ?>">
+      <input type="submit" value="Buscar">
+      <input type="reset" value="Reset">
+    </form>
+  </div>
 
   <?php
   // Calculos Paginacion
@@ -238,29 +242,29 @@ try {
 
   ?>
   <!--Paginación-->
-  <div id="pagination-container">
-  <form action="inicio_profesores.php" method="post" id="paginacion">
-    <input type="submit" name="primera_pagina" value="<<" <?php ?>>
-    <input type="submit" name="pagina_anterior" value="<" <?php ?>>
-    <input type="text" name="pagina" id="pagina_input" value="<?php echo $num_paginas ?>">
-    <input type="submit" name="siguiente_pagina" value=">">
-    <input type="submit" name="ultima_pagina" value=">>" <?php ?>>
-  </form>
+  <div id="contenedorPaginacion">
+    <form action="inicio_profesores.php" method="post" id="paginacion">
+      <input type="submit" name="primera_pagina" value="<<" <?php ?>>
+      <input type="submit" name="pagina_anterior" value="<" <?php ?>>
+      <input type="text" name="pagina" id="pagina_input" value="<?php echo $num_paginas ?>">
+      <input type="submit" name="siguiente_pagina" value=">">
+      <input type="submit" name="ultima_pagina" value=">>" <?php ?>>
+    </form>
 
-</div>
+  </div>
 
 
-<script>
-  const paginaInput = document.getElementById('pagina_input');
-  const paginacionForm = document.getElementById('paginacion');
+  <script>
+    const paginaInput = document.getElementById('pagina_input');
+    const paginacionForm = document.getElementById('paginacion');
 
-  paginaInput.addEventListener('keypress', function(event) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      paginacionForm.submit();
-    }
-  });
-</script>
+    paginaInput.addEventListener('keypress', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        paginacionForm.submit();
+      }
+    });
+  </script>
 
 
 
@@ -277,6 +281,8 @@ try {
 
   ?>
 
+
+    <h1>EDITAR ALUMNO</h1>
     <!-- Formulario de edición -->
     <form method='post' action='inicio_profesores.php' id='insercion_edicion'>
       <input type='hidden' name='nia' value='<?php echo $nia; ?>'>
@@ -297,6 +303,7 @@ try {
   if (isset($_POST['insertar_alumno']) && !isset($_POST['cancelar'])) {
   ?>
 
+    <h1>INSERTAR ALUMNO</h1>
     <!-- Formulario de inserción -->
     <form method='post' action='inicio_profesores.php' id='insercion_edicion'>
       <label for='nia'>NIA: </label>
