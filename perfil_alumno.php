@@ -123,7 +123,7 @@ try {
 
 
   //Consulta para obtener los mensajes del alumno
-  $sql_mensajes = "SELECT c.fecha, c.comentario, c.hablado_con, c.hablado_por, c.prioridad_id
+  $sql_mensajes = "SELECT c.fecha, c.comentario, c.hablado_con, c.hablado_por
                   FROM comentario c
                   JOIN prioridades p ON c.prioridad_id=p.id
                   WHERE p.alumno_id='$user'";
@@ -139,7 +139,6 @@ try {
           <th>Asunto</th>
           <th>Hablado con</th>
           <th>Hablado por</th>
-          <th>Prioridad</th>
           </tr>";
     foreach ($mensajes as $mensaje) {
       echo "<tr>
@@ -147,27 +146,11 @@ try {
             <td>" . $mensaje['comentario'] . "</td>
             <td>" . $mensaje['hablado_con'] . "</td>
             <td>" . $mensaje['hablado_por'] . "</td>
-            <td>" . getPrioridadNombre($mensaje['prioridad_id']) . "</td>
             </tr>";
     }
     echo "</table>";
   } else {
     echo "<p>No se encontraron mensajes para este alumno.</p>";
-  }
-
-  // Función para obtener el nombre de la prioridad
-  function getPrioridadNombre($prioridad_id)
-  {
-    switch ($prioridad_id) {
-      case 1:
-        return "Alta";
-      case 2:
-        return "Media";
-      case 3:
-        return "Baja";
-      default:
-        return "Sin prioridad";
-    }
   }
 
   ?>
