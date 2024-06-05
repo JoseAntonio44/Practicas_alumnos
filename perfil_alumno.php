@@ -26,6 +26,7 @@ try {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/perfil_alumno.css">
+  <title>Menú de Inicio</title>
   <title>FCT Alumno</title>
 
 </head>

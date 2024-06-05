@@ -29,6 +29,7 @@ try {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/EmpresaCSS.css">
+  <link rel="shortcut icon" href="IMG/favicon.png" type="image/x-icon">
   <title>Empresas</title>
 </head>
 
